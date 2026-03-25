@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America - Invest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container dashboard-mode">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="nav-item" style="margin-left: 0;">
+                    <i class="fas fa-bars nav-icon"></i>
+                    <span class="nav-text">Menu</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-item">
+                    <i class="far fa-envelope nav-icon"></i>
+                    <span class="nav-text">Inbox</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-shopping-cart nav-icon"></i>
+                    <span class="nav-text">Products</span>
+                </div>
+                <div class="nav-item" id="logout-btn">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    <span class="nav-text">Log Out</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" style="padding-top: 60px;"> <!-- Adjust padding if needed -->
+            <div class="invest-summary">
+                <div class="invest-total-label">Total Investment Value</div>
+                <div class="invest-total-amount">$850,000,000.00</div>
+                <div class="invest-change">+$12,450,000.00 (+1.48%)</div>
+            </div>
+
+            <div class="invest-actions">
+                <div class="invest-btn action-trigger">Trade</div>
+                <div class="invest-btn action-trigger">Orders</div>
+                <div class="invest-btn action-trigger">Watchlist</div>
+            </div>
+
+            <div class="section-header">Your Holdings</div>
+            <div class="holdings-list">
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">NVIDIA Corp</div>
+                        <div class="holding-symbol">NVDA</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$250,000,000.00</div>
+                        <div class="holding-change">+$5,200,000.00</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">Tesla Inc</div>
+                        <div class="holding-symbol">TSLA</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$200,000,000.00</div>
+                        <div class="holding-change">+$3,150,000.00</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">Apple Inc</div>
+                        <div class="holding-symbol">AAPL</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$150,000,000.00</div>
+                        <div class="holding-change">+$1,200,000.00</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">SpaceX (Private)</div>
+                        <div class="holding-symbol">SPX</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$150,000,000.00</div>
+                        <div class="holding-change">+$0.00</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">Bitcoin Trust</div>
+                        <div class="holding-symbol">GBTC</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$100,000,000.00</div>
+                        <div class="holding-change negative">-$450,000.00</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item" id="accounts-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span>Accounts</span>
+            </div>
+            <div class="nav-item" id="pay-transfer-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span>Pay & Transfer</span>
+            </div>
+            <div class="nav-item" id="deposit-checks-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>Deposit Checks</span>
+            </div>
+            <div class="nav-item active">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Invest</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Security Code Modal -->
+    <div id="securityModal" class="modal-overlay">
+        <div class="security-modal-content">
+            <div class="security-modal-header">
+                <img src="logo.svg" alt="Bank of America Logo" class="security-logo-icon">
+                <span class="security-logo-text">BANK OF AMERICA</span>
+            </div>
+            <div class="security-body">
+                <div class="security-icon-lock">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="security-title">Identity Verification</div>
+                <div class="security-text">
+                    For your security, we need to verify your identity. A 6-digit authorization code has been sent to your device ending in *9876.
+                </div>
+                <div id="securityError" class="security-error-msg" style="display:none;">
+                    <i class="fas fa-exclamation-circle"></i> Please enter a valid 6-digit code.
+                </div>
+                <div class="input-label">Authorization Code</div>
+                <input type="text" id="securityCode" class="security-input" placeholder="Enter 6-digit code" maxlength="6" inputmode="numeric">
+                <button id="verifyBtn" class="security-btn">Verify Identity</button>
+                <div class="security-footer-link">Don't have your device?</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="restrictedModal" class="modal-overlay">
+        <div class="restricted-modal-content">
+            <div class="restricted-modal-header">
+                <div class="restricted-modal-logo">
+                    <img src="logo.svg" alt="" class="modal-logo-icon">
+                    BANK OF AMERICA
+                </div>
+                <div class="restricted-modal-close" id="closeRestrictedModal">&times;</div>
+            </div>
+            <div class="restricted-modal-body">
+                <div class="security-icon-lock" style="color: #008a00;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="restricted-text" style="text-align: center; font-size: 18px;">
+                    <strong>Verification Successful</strong>
+                </div>
+                <div class="restricted-text" style="text-align: center;">
+                    Your identity has been verified. You can now proceed with your transaction.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+        
+        document.getElementById('accounts-tab').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        document.getElementById('pay-transfer-tab').addEventListener('click', function() {
+            window.location.href = 'pay_transfer.html';
+        });
+
+        document.getElementById('deposit-checks-tab').addEventListener('click', function() {
+            window.location.href = 'deposit_checks.html';
+        });
+
+        // Handle Modals
+        const securityModal = document.getElementById('securityModal');
+        const restrictedModal = document.getElementById('restrictedModal');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const securityCodeInput = document.getElementById('securityCode');
+        const securityError = document.getElementById('securityError');
+        const closeRestrictedBtn = document.getElementById('closeRestrictedModal');
+        const actionTriggers = document.querySelectorAll('.action-trigger');
+
+        // Open Security Modal on Action Click
+        actionTriggers.forEach(btn => {
+            btn.addEventListener('click', function() {
+                securityModal.style.display = 'flex';
+                securityCodeInput.value = ''; // Clear input
+                securityError.style.display = 'none'; // Clear error
+                securityCodeInput.focus();
+            });
+        });
+
+        // Handle Verify Button Click
+        const handleVerify = () => {
+            if (securityCodeInput.value.length === 6) {
+                // Simulate processing delay
+                verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+                securityError.style.display = 'none';
+                
+                setTimeout(() => {
+                    securityModal.style.display = 'none';
+                    restrictedModal.style.display = 'flex'; // Show restriction after verification
+                    verifyBtn.innerHTML = 'Verify Identity'; // Reset button
+                }, 1500);
+            } else {
+                securityError.style.display = 'flex';
+                securityCodeInput.classList.add('error-shake');
+                setTimeout(() => securityCodeInput.classList.remove('error-shake'), 500);
+            }
+        };
+
+        verifyBtn.addEventListener('click', handleVerify);
+
+        // Allow Enter key to submit
+        securityCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleVerify();
+            }
+        });
+
+        // Close Restricted Modal
+        closeRestrictedBtn.addEventListener('click', function() {
+            restrictedModal.style.display = 'none';
+        });
+
+        // Close on outside click
+        securityModal.addEventListener('click', function(e) {
+            if (e.target === securityModal) {
+                securityModal.style.display = 'none';
+            }
+        });
+
+        restrictedModal.addEventListener('click', function(e) {
+            if (e.target === restrictedModal) {
+                restrictedModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

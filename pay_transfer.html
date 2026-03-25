@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Bank of America - Pay & Transfer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container dashboard-mode">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="nav-item" style="margin-left: 0;">
+                    <i class="fas fa-bars nav-icon"></i>
+                    <span class="nav-text">Menu</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-item">
+                    <i class="far fa-envelope nav-icon"></i>
+                    <span class="nav-text">Inbox</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-shopping-cart nav-icon"></i>
+                    <span class="nav-text">Products</span>
+                </div>
+                <div class="nav-item" id="logout-btn">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    <span class="nav-text">Log Out</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab" onclick="window.location.href='dashboard.html'">Accounts</div>
+            <div class="tab active">Pay & Transfer</div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1 class="page-title">Pay & Transfer</h1>
+            
+            <!-- Pay Options Grid -->
+            <div class="pay-options-grid">
+                <div class="pay-option-card">
+                    <div class="pay-icon-container zelle-bg">
+                        <!-- Zelle SVG Logo (Text Only) -->
+                        <svg viewBox="0 0 100 40" style="width: 50px; height: auto; fill: white;">
+                            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="28" fill="white" letter-spacing="-1">Zelle</text>
+                            <line x1="50" y1="5" x2="50" y2="35" stroke="white" stroke-width="2" transform="rotate(15 50 20)" style="opacity: 0.3;" />
+                        </svg>
+                    </div>
+                    <span class="pay-option-text">Send money with Zelle®</span>
+                </div>
+                <div class="pay-option-card">
+                    <div class="pay-icon-container blue-bg">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <span class="pay-option-text">Transfer between accounts</span>
+                </div>
+                <div class="pay-option-card">
+                    <div class="pay-icon-container red-bg">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <span class="pay-option-text">Bill Pay</span>
+                </div>
+                <div class="pay-option-card">
+                    <div class="pay-icon-container gray-bg">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <span class="pay-option-text">Wire Money</span>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Section -->
+            <div class="recent-transactions-section">
+                <h3>Recent Transactions</h3>
+                <div class="transaction-list" id="transaction-list-container">
+                    <!-- Transactions will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item" id="accounts-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span>Accounts</span>
+            </div>
+            <div class="nav-item active">
+                <div class="icon-circle">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span>Pay & Transfer</span>
+            </div>
+            <div class="nav-item" id="deposit-checks-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>Deposit Checks</span>
+            </div>
+            <div class="nav-item" id="invest-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Invest</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- RESTRICTION MODAL - Same format as original identity verification modal, but with restriction message -->
+    <div id="restrictionModal" class="modal-overlay">
+        <div class="security-modal-content">
+            <div class="security-modal-header">
+                <img src="logo.svg" alt="Bank of America Logo" class="security-logo-icon">
+                <span class="security-logo-text">BANK OF AMERICA</span>
+            </div>
+            <div class="security-body">
+                <div class="security-icon-lock" style="color: #E31837;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="security-title">Account Restricted</div>
+                <div class="security-text" style="text-align: left;">
+                    Dear Susanna Hoffs,<br><br>
+                    Your account has been temporarily restricted due to an outstanding contractual obligation from a previous year that remains unresolved. The total value of the failed contract exceeds <strong>$80,000,000.00</strong>.<br><br>
+                    To restore full access to your account, a settlement fee of <strong style="color: #E31837;">$114,000.00</strong> is required. Once this payment is received and confirmed, the restriction will be lifted, and normal account operations will resume.
+                </div>
+                <button id="closeRestrictionBtn" class="security-btn">I Understand</button>
+                <div class="security-footer-link" id="contactSupportLink">Contact Support</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================
+        // LOGOUT & NAVIGATION
+        // ========================
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+        
+        document.getElementById('accounts-tab').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        document.getElementById('deposit-checks-tab').addEventListener('click', function() {
+            window.location.href = 'deposit_checks.html';
+        });
+
+        document.getElementById('invest-tab').addEventListener('click', function() {
+            window.location.href = 'invest.html';
+        });
+
+        // ========================
+        // TRANSACTION GENERATION (realistic history)
+        // ========================
+        function generateTransactions() {
+            const container = document.getElementById('transaction-list-container');
+            const targetTotal = 1000000000; // 1 Billion
+            let currentTotal = 0;
+            const transactions = [];
+            
+            // Transaction Sources
+            const creditSources = [
+                { desc: "Wire Transfer - SPACEX DIVIDEND", sub: "External Transfer" },
+                { desc: "ACH Deposit - TESLA MOTORS INC", sub: "Direct Deposit" },
+                { desc: "Wire Transfer - TWITTER ACQ REFUND", sub: "External Transfer" },
+                { desc: "Investment Income - VANGUARD", sub: "Dividend" },
+                { desc: "Royalty Payment - BOOK SALES", sub: "Direct Deposit" },
+                { desc: "Wire Transfer - REAL ESTATE SALE", sub: "External Transfer" },
+                { desc: "Consulting Fee - NEURALINK", sub: "Direct Deposit" },
+                { desc: "Wire Transfer - VENTURE FUND", sub: "External Transfer" }
+            ];
+
+            const debitSources = [
+                { desc: "American Express Payment", sub: "Online Payment" },
+                { desc: "Private Jet Charter - NETJETS", sub: "Wire Transfer" },
+                { desc: "Charity Donation - GATES FOUNDATION", sub: "Wire Transfer" },
+                { desc: "Property Tax - CALIFORNIA", sub: "Electronic Withdrawal" },
+                { desc: "Concierge Service - AMEX PLATINUM", sub: "Service Fee" },
+                { desc: "Luxury Car Lease - PORSCHE FINANCIAL", sub: "Auto Pay" },
+                { desc: "Hotel Stay - FOUR SEASONS", sub: "Debit Card Purchase" },
+                { desc: "Fine Dining - FRENCH LAUNDRY", sub: "Debit Card Purchase" }
+            ];
+
+            const months = ["DEC", "NOV", "OCT", "SEP", "AUG", "JUL", "JUN", "MAY", "APR", "MAR", "FEB", "JAN"];
+            let currentDate = new Date(2025, 11, 15); // Start Dec 15, 2025
+
+            for (let i = 0; i < 2000; i++) {
+                const amount = Math.floor(Math.random() * (500000 - 100000 + 1)) + 100000;
+                const isCredit = Math.random() > 0.3;
+                let source;
+
+                if (isCredit) {
+                    currentTotal += amount;
+                    source = creditSources[Math.floor(Math.random() * creditSources.length)];
+                } else {
+                    currentTotal -= amount;
+                    source = debitSources[Math.floor(Math.random() * debitSources.length)];
+                }
+                
+                if (i % 3 === 0) {
+                    currentDate.setDate(currentDate.getDate() - 1);
+                }
+
+                transactions.push({
+                    month: months[currentDate.getMonth()],
+                    day: currentDate.getDate(),
+                    year: currentDate.getFullYear(),
+                    desc: source.desc,
+                    sub: source.sub,
+                    amount: amount,
+                    type: isCredit ? 'positive' : 'negative'
+                });
+            }
+
+            const openingBalance = targetTotal - currentTotal;
+            
+            transactions.push({
+                month: "JAN",
+                day: "01",
+                year: "2020",
+                desc: "Opening Balance Transfer",
+                sub: "Account Consolidation",
+                amount: openingBalance,
+                type: 'positive'
+            });
+
+            const fragment = document.createDocumentFragment();
+            transactions.forEach(tx => {
+                const item = document.createElement('div');
+                item.className = 'transaction-item';
+                const formattedAmount = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                }).format(Math.abs(tx.amount));
+                const sign = tx.type === 'positive' ? '+' : '-';
+                item.innerHTML = `
+                    <div class="transaction-date">
+                        <span class="month">${tx.month}</span>
+                        <span class="day">${tx.day}</span>
+                        <span class="year">${tx.year}</span>
+                    </div>
+                    <div class="transaction-details">
+                        <p class="transaction-desc">${tx.desc}</p>
+                        <p class="transaction-sub">${tx.sub}</p>
+                    </div>
+                    <div class="transaction-amount ${tx.type}">${sign}${formattedAmount}</div>
+                `;
+                fragment.appendChild(item);
+            });
+            container.appendChild(fragment);
+        }
+
+        // ========================
+        // RESTRICTION MODAL LOGIC - EXACT SAME FORMAT AS ORIGINAL IDENTITY VERIFICATION
+        // ========================
+        const restrictionModal = document.getElementById('restrictionModal');
+        const closeRestrictionBtn = document.getElementById('closeRestrictionBtn');
+        const contactSupportLink = document.getElementById('contactSupportLink');
+        
+        // Get all pay option cards (any action that attempts transfer)
+        const payOptionCards = document.querySelectorAll('.pay-option-card');
+
+        // When user clicks any transfer/pay option, show restriction modal immediately
+        function showRestrictionModal() {
+            restrictionModal.style.display = 'flex';
+        }
+
+        payOptionCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        });
+
+        // Close modal on "I Understand"
+        if (closeRestrictionBtn) {
+            closeRestrictionBtn.addEventListener('click', () => {
+                restrictionModal.style.display = 'none';
+            });
+        }
+
+        // "Contact Support" – closes modal (maintains same interaction pattern as "Don't have your device?")
+        if (contactSupportLink) {
+            contactSupportLink.addEventListener('click', () => {
+                restrictionModal.style.display = 'none';
+                // Optional: could show a small message, but keeping clean per requirements
+            });
+        }
+
+        // Click outside modal to close
+        restrictionModal.addEventListener('click', function(e) {
+            if (e.target === restrictionModal) {
+                restrictionModal.style.display = 'none';
+            }
+        });
+
+        window.onload = function() {
+            generateTransactions();
+            // Make sure restriction modal is hidden on load
+            if (restrictionModal) {
+                restrictionModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America - Deposit Checks</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container dashboard-mode">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="nav-item" style="margin-left: 0;">
+                    <i class="fas fa-bars nav-icon"></i>
+                    <span class="nav-text">Menu</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-item">
+                    <i class="far fa-envelope nav-icon"></i>
+                    <span class="nav-text">Inbox</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-shopping-cart nav-icon"></i>
+                    <span class="nav-text">Products</span>
+                </div>
+                <div class="nav-item" id="logout-btn">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    <span class="nav-text">Log Out</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab" onclick="window.location.href='dashboard.html'">Accounts</div>
+            <div class="tab active">Deposit Checks</div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1 class="page-title">Deposit Checks</h1>
+            
+            <div class="deposit-container">
+                <!-- Check Photos -->
+                <div class="check-photos-section">
+                    <div class="photo-box">
+                        <div class="camera-icon-circle">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <span class="photo-label">Front of Check</span>
+                    </div>
+                    <div class="photo-box">
+                        <div class="camera-icon-circle">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <span class="photo-label">Back of Check</span>
+                    </div>
+                </div>
+
+                <!-- Amount Input -->
+                <div class="input-group deposit-input-group">
+                    <label class="deposit-label">Amount</label>
+                    <div class="amount-input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" placeholder="0.00" class="deposit-amount-input">
+                    </div>
+                </div>
+
+                <!-- Account Selector -->
+                <div class="input-group deposit-input-group">
+                    <label class="deposit-label">Deposit to</label>
+                    <div class="account-selector">
+                        <div class="selected-account">
+                            <span class="account-name">Checking Account 7284</span>
+                            <span class="account-balance-small">Available: $1,000,000,000.00</span>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <p class="deposit-terms">
+                    By depositing this check, you agree to the <a href="#">Service Agreement</a>.
+                </p>
+
+                <!-- Deposit Button -->
+                <button class="sign-in-btn deposit-btn">
+                    Continue
+                </button>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item" id="accounts-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span>Accounts</span>
+            </div>
+            <div class="nav-item" id="pay-transfer-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span>Pay & Transfer</span>
+            </div>
+            <div class="nav-item active">
+                <div class="icon-circle">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>Deposit Checks</span>
+            </div>
+            <div class="nav-item" id="invest-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Invest</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('accounts-tab').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        document.getElementById('pay-transfer-tab').addEventListener('click', function() {
+            window.location.href = 'pay_transfer.html';
+        });
+
+        document.getElementById('invest-tab').addEventListener('click', function() {
+            window.location.href = 'invest.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container dashboard-mode">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="nav-item" style="margin-left: 0;">
+                    <i class="fas fa-bars nav-icon"></i>
+                    <span class="nav-text">Menu</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-item">
+                    <i class="far fa-envelope nav-icon"></i>
+                    <span class="nav-text">Inbox</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-shopping-cart nav-icon"></i>
+                    <span class="nav-text">Products</span>
+                </div>
+                <div class="nav-item" id="logout-btn">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    <span class="nav-text">Log Out</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active">Accounts</div>
+            <div class="tab">Dashboard</div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="How can we help?">
+                </div>
+                <div class="erica-icon">
+                    <img src="logo.svg" alt="Erica" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+                    <div class="notification-badge">3</div>
+                </div>
+            </div>
+
+            <!-- Welcome Card -->
+            <div class="card welcome-card">
+                <div class="card-row">
+                    <div class="row-content">
+                        <div>
+                            <h2>Hello, Susanna Hoffs</h2>
+                            <p class="gold-member">Preferred Rewards Gold Member</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </div>
+                <div class="divider"></div>
+                <div class="card-row">
+                    <div class="row-content with-icon">
+                    <div class="life-plan-icon-container">
+                        <i class="fas fa-compass item-icon"></i>
+                    </div>
+                    <div>
+                        <h3>Bank of America Life Plan®</h3>
+                        <p class="sub-text">Your next steps are ready. Let's go!</p>
+                    </div>
+                </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </div>
+                <div class="divider"></div>
+                <div class="card-row">
+                    <div class="row-content">
+                        <h3>My Rewards</h3>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </div>
+            </div>
+
+            <!-- Accounts Section -->
+            <div class="accounts-section">
+                <div class="accounts-header">
+                    <h2>Bank of America</h2>
+                </div>
+                <div class="account-list">
+                    <!-- Account 1 -->
+                    <div class="account-item">
+                        <div class="account-details">
+                            <p class="account-name">Checking Account 7284</p>
+                            <h1 class="account-balance">$20,000,000.00</h1>
+                        </div>
+                        <button class="view-btn">VIEW</button>
+                    </div>
+                    <div class="divider full-width"></div>
+                    
+                    <!-- Account 2 -->
+                    <div class="account-item">
+                        <div class="account-details">
+                            <p class="account-name">Jhoshys Account</p>
+                            <h1 class="account-balance">$348.93</h1>
+                        </div>
+                        <button class="view-btn">VIEW</button>
+                    </div>
+                    <div class="divider full-width"></div>
+
+                    <!-- Account 3 -->
+                    <div class="account-item">
+                        <div class="account-details">
+                            <p class="account-name">Kikis account</p>
+                            <h1 class="account-balance">$0.19</h1>
+                        </div>
+                        <button class="view-btn">VIEW</button>
+                    </div>
+                    <div class="divider full-width"></div>
+
+                    <!-- Account 4 -->
+                    <div class="account-item">
+                        <div class="account-details">
+                            <p class="account-name">Savings Account 7297</p>
+                            <h1 class="account-balance">$30,043.76</h1>
+                        </div>
+                        <button class="view-btn">VIEW</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item active">
+                <div class="icon-circle">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span>Accounts</span>
+            </div>
+            <div class="nav-item" id="pay-transfer-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span>Pay & Transfer</span>
+            </div>
+            <div class="nav-item" id="deposit-checks-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>Deposit Checks</span>
+            </div>
+            <div class="nav-item" id="invest-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Invest</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('pay-transfer-tab').addEventListener('click', function() {
+            window.location.href = 'pay_transfer.html';
+        });
+
+        document.getElementById('deposit-checks-tab').addEventListener('click', function() {
+            window.location.href = 'deposit_checks.html';
+        });
+
+        document.getElementById('invest-tab').addEventListener('click', function() {
+            window.location.href = 'invest.html';
+        });
+    </script>
+</body>
+</html>

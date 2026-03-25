@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America Prepaid - Sign In</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container">
+        <section class="splash-screen" id="splashScreen">
+            <div class="splash-top">
+                <div class="splash-logo-wrap">
+                    <img src="logo.svg" alt="Bank of America Logo" class="splash-logo-icon">
+                    <div class="splash-brand">BANK OF AMERICA</div>
+                </div>
+            </div>
+            <div class="splash-bottom">
+                <div class="splash-tagline">WHAT WOULD YOU LIKE THE POWER TO DO?</div>
+                <div class="splash-actions">
+                    <button type="button" class="splash-login-btn" id="openLoginBtn">LOG IN</button>
+                    <button type="button" class="splash-create-btn" id="openCreateBtn">CREATE ACCOUNT</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="login-screen" id="loginScreen" style="display: none;">
+            <header class="header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Bank of America Logo" class="logo-icon">
+                    <div class="logo-text">
+                        <span class="company-name">BANK OF AMERICA</span>
+                        <span class="service-name">Online Banking</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <h1>Sign In</h1>
+                <p class="subtitle">Use your website username and password.</p>
+
+                <form class="login-form" id="loginForm">
+                    <div class="input-group">
+                        <label for="username" class="input-label">Username</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="username" placeholder="Username" required>
+                            <a href="#" class="forgot-link">FORGOT</a>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password" class="input-label">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" placeholder="Password" required>
+                            <i class="fas fa-eye-slash password-toggle" id="togglePassword"></i>
+                            <a href="#" class="forgot-link">FORGOT</a>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="sign-in-btn">
+                        SIGN IN <i class="fas fa-arrow-right arrow"></i>
+                    </button>
+                </form>
+            </main>
+
+            <footer class="footer">
+                <a href="#" class="footer-link">
+                    ACTIVATE CARD <i class="fas fa-credit-card footer-icon"></i>
+                </a>
+                <div class="divider"></div>
+                <a href="#" class="footer-link" id="createAccountLink">
+                    REGISTER <i class="fas fa-user footer-icon"></i>
+                </a>
+            </footer>
+        </div>
+    </div>
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-title">Sign In Error</div>
+            <div class="modal-message" id="modalMessage">Invalid username or password. Please try again.</div>
+            <button class="modal-btn" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+    <script>
+        function showModal(message) {
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        // Password Toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+
+        const splashScreen = document.getElementById('splashScreen');
+        const loginScreen = document.getElementById('loginScreen');
+        const openLoginBtn = document.getElementById('openLoginBtn');
+        const openCreateBtn = document.getElementById('openCreateBtn');
+
+        const showLogin = () => {
+            splashScreen.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            document.getElementById('username').focus();
+        };
+
+        openLoginBtn.addEventListener('click', showLogin);
+        openCreateBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        togglePassword.addEventListener('click', function () {
+            // toggle the type attribute
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            // toggle the eye icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        window.addEventListener('load', function() {
+            const savedUsername = localStorage.getItem('rememberedUsername');
+            if (savedUsername) {
+                document.getElementById('username').value = savedUsername;
+                document.getElementById('remember-me').checked = true;
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const loginBtn = document.querySelector('.sign-in-btn');
+            const originalBtnContent = loginBtn.innerHTML;
+            
+            // Show spinner
+            loginBtn.innerHTML = '<div class="spinner"></div>';
+            loginBtn.disabled = true;
+
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+
+            setTimeout(() => {
+                if (usernameInput === 'Susannahoffs00' && passwordInput === 'SussanaH10$') {
+                    // Handle Remember Me
+                    if (rememberMe) {
+                        localStorage.setItem('rememberedUsername', usernameInput);
+                    } else {
+                        localStorage.removeItem('rememberedUsername');
+                    }
+                    window.location.href = 'dashboard.html';
+                } else {
+                    // Restore button
+                    loginBtn.innerHTML = originalBtnContent;
+                    loginBtn.disabled = false;
+                    showModal('Invalid username or password. Please try again.');
+                }
+            }, 2000); // 2 seconds delay
+        });
+    </script>
+</body>
+</html>
