@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; font-src 'self' https://cdnjs.cloudflare.com data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <script src="security.js"></script>
     <title>Bank of America - Pay & Transfer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -146,76 +150,65 @@
         });
 
         // ========================
-        // TRANSACTION GENERATION (realistic history)
+        // TRANSACTION GENERATION (ledger: Mar–Jun 2026)
         // ========================
         function generateTransactions() {
             const container = document.getElementById('transaction-list-container');
-            const months = ["DEC", "NOV", "OCT", "SEP", "AUG", "JUL", "JUN", "MAY", "APR", "MAR", "FEB", "JAN"];
-            let currentDate = new Date(2025, 11, 15);
+            const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
             const history = [
-                { desc: "Dominion Energy", sub: "Bill Pay", amount: 20000, type: "negative" },
-                { desc: "Delta Air Lines", sub: "Travel", amount: 18450, type: "negative" },
-                { desc: "Dominion Energy", sub: "Bill Pay", amount: 15000, type: "negative" },
-                { desc: "Marriott Hotels", sub: "Lodging", amount: 12780, type: "negative" },
-                { desc: "ACH Deposit - EMPLOYER PAYROLL", sub: "Direct Deposit", amount: 19500, type: "positive" },
-                { desc: "Dominion Energy", sub: "Bill Pay", amount: 10000, type: "negative" },
-                { desc: "Hertz Rent A Car", sub: "Travel", amount: 8920, type: "negative" },
-                { desc: "Whole Foods Market", sub: "Groceries", amount: 6240, type: "negative" },
-                { desc: "Dominion Energy", sub: "Bill Pay", amount: 5000, type: "negative" },
-                { desc: "UnitedHealthcare", sub: "Medical Insurance", amount: 17850, type: "negative" },
-                { desc: "Hilton Hotels", sub: "Travel", amount: 14320, type: "negative" },
-                { desc: "State Farm Insurance", sub: "Auto Insurance", amount: 9650, type: "negative" },
-                { desc: "Costco Wholesale", sub: "Shopping", amount: 7310, type: "negative" },
-                { desc: "IRS TAX REFUND", sub: "Government Payment", amount: 16200, type: "positive" },
-                { desc: "Southwest Airlines", sub: "Travel", amount: 11840, type: "negative" },
-                { desc: "Lowe's Home Improvement", sub: "Home & Garden", amount: 8540, type: "negative" },
-                { desc: "CVS Pharmacy", sub: "Health & Wellness", amount: 5120, type: "negative" },
-                { desc: "Shell Oil", sub: "Gas & Fuel", amount: 6890, type: "negative" },
-                { desc: "Verizon Wireless", sub: "Phone Bill", amount: 5450, type: "negative" },
-                { desc: "Amazon.com", sub: "Online Purchase", amount: 9230, type: "negative" },
-                { desc: "Mortgage Payment", sub: "Home Loan", amount: 19800, type: "negative" },
-                { desc: "Fidelity 401K CONTRIBUTION", sub: "Retirement", amount: 7500, type: "negative" },
-                { desc: "ACH Deposit - BONUS PAY", sub: "Direct Deposit", amount: 12000, type: "positive" },
-                { desc: "Trader Joe's", sub: "Groceries", amount: 5780, type: "negative" },
-                { desc: "Geico Insurance", sub: "Insurance", amount: 10450, type: "negative" },
-                { desc: "Wire Transfer - REAL ESTATE ESCROW", sub: "External Transfer", amount: 187450, type: "negative" },
-                { desc: "ACH Deposit - CONSULTING FEE", sub: "Direct Deposit", amount: 192800, type: "positive" },
-                { desc: "Wire Transfer - CONTRACTOR PAYMENT", sub: "External Transfer", amount: 165320, type: "negative" },
-                { desc: "Investment Transfer - BROKERAGE", sub: "Securities Transfer", amount: 178900, type: "negative" },
-                { desc: "ACH Deposit - RENT COLLECTION", sub: "Direct Deposit", amount: 155600, type: "positive" },
-                { desc: "Wire Transfer - HOME RENOVATION", sub: "External Transfer", amount: 199250, type: "negative" },
-                { desc: "ACH Deposit - ANNUAL BONUS", sub: "Direct Deposit", amount: 200000, type: "positive" },
-                { desc: "Law Firm Retainer", sub: "Legal Services", amount: 152400, type: "negative" },
-                { desc: "Wire Transfer - VEHICLE PURCHASE", sub: "External Transfer", amount: 168750, type: "negative" },
-                { desc: "Tuition Payment - UNIVERSITY", sub: "Education", amount: 175320, type: "negative" },
-                { desc: "Wire Transfer - MEDICAL CENTER", sub: "Healthcare", amount: 189500, type: "negative" },
-                { desc: "ACH Deposit - INVESTMENT DIVIDEND", sub: "Dividend", amount: 158920, type: "positive" },
-                { desc: "Wire Transfer - BUSINESS EXPENSE", sub: "External Transfer", amount: 163480, type: "negative" },
-                { desc: "Capital Gains Distribution", sub: "Investment Income", amount: 172650, type: "positive" },
-                { desc: "Wire Transfer - TAX PAYMENT", sub: "Government Payment", amount: 198100, type: "negative" },
-                { desc: "ACH Deposit - ROYALTY PAYMENT", sub: "Direct Deposit", amount: 161275, type: "positive" },
-                { desc: "Wire Transfer - PROPERTY INSURANCE", sub: "Insurance", amount: 154890, type: "negative" },
-                { desc: "ACH Deposit - COMMISSION PAY", sub: "Direct Deposit", amount: 196340, type: "positive" },
-                { desc: "Wire Transfer - LANDSCAPING PROJECT", sub: "Home Improvement", amount: 167215, type: "negative" },
-                { desc: "ACH Deposit - SETTLEMENT PROCEEDS", sub: "Direct Deposit", amount: 185720, type: "positive" },
-                { desc: "Wire Transfer - SOLAR INSTALLATION", sub: "Home Improvement", amount: 179480, type: "negative" },
-                { desc: "ACH Deposit - TRUST DISTRIBUTION", sub: "Direct Deposit", amount: 150000, type: "positive" },
-                { desc: "Wire Transfer - YACHT CHARTER", sub: "Travel", amount: 193650, type: "negative" }
+                { date: new Date(2026, 2, 3), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 6a3ee9dc68982I1cTkINfUYpt76o"], amount: 18450000.00, type: "positive" },
+                { date: new Date(2026, 2, 6), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4556.00, type: "positive" },
+                { date: new Date(2026, 2, 7), desc: "POS Purchase – Walmart", sub: "POS Purchase", amount: 96.22, type: "negative" },
+                { date: new Date(2026, 2, 10), desc: "ATM Withdrawal", sub: "ATM", amount: 400.00, type: "negative" },
+                { date: new Date(2026, 2, 14), desc: "Online Purchase – Amazon", sub: "Online Purchase", amount: 118.75, type: "negative" },
+                { date: new Date(2026, 2, 18), desc: "Fuel Purchase", sub: "Gas & Fuel", amount: 72.55, type: "negative" },
+                { date: new Date(2026, 2, 21), desc: "Utility Bill Payment", sub: "Bill Pay", amount: 181.25, type: "negative" },
+                { date: new Date(2026, 2, 25), desc: "Restaurant Purchase", sub: "Dining", amount: 95.00, type: "negative" },
+                { date: new Date(2026, 2, 28), desc: "Rent Payment", sub: "Rent", amount: 3650.00, type: "negative" },
+
+                { date: new Date(2026, 3, 2), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 7f8bc04de79a31K2bUjHMfVps87n"], amount: 18450000.00, type: "positive" },
+                { date: new Date(2026, 3, 4), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4420.00, type: "positive" },
+                { date: new Date(2026, 3, 6), desc: "POS Purchase – Costco", sub: "POS Purchase", amount: 210.14, type: "negative" },
+                { date: new Date(2026, 3, 9), desc: "ATM Withdrawal", sub: "ATM", amount: 500.00, type: "negative" },
+                { date: new Date(2026, 3, 12), desc: "Online Purchase – eBay", sub: "Online Purchase", amount: 88.45, type: "negative" },
+                { date: new Date(2026, 3, 17), desc: "Fuel Purchase", sub: "Gas & Fuel", amount: 76.32, type: "negative" },
+                { date: new Date(2026, 3, 21), desc: "Utility Bill Payment", sub: "Bill Pay", amount: 146.22, type: "negative" },
+                { date: new Date(2026, 3, 24), desc: "Grocery Purchase", sub: "Groceries", amount: 84.19, type: "negative" },
+                { date: new Date(2026, 3, 28), desc: "Rent Payment", sub: "Rent", amount: 3350.00, type: "negative" },
+
+                { date: new Date(2026, 4, 1), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 9d2ef15ac8b42M3cVkINwXqt98m"], amount: 18450000.00, type: "positive" },
+                { date: new Date(2026, 4, 2), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4500.00, type: "positive" },
+                { date: new Date(2026, 4, 5), desc: "Grocery Purchase", sub: "Groceries", amount: 124.85, type: "negative" },
+                { date: new Date(2026, 4, 8), desc: "ATM Withdrawal", sub: "ATM", amount: 350.00, type: "negative" },
+                { date: new Date(2026, 4, 12), desc: "Online Purchase – Amazon", sub: "Online Purchase", amount: 89.50, type: "negative" },
+                { date: new Date(2026, 4, 16), desc: "Fuel Purchase", sub: "Gas & Fuel", amount: 70.15, type: "negative" },
+                { date: new Date(2026, 4, 20), desc: "Utility Bill Payment", sub: "Bill Pay", amount: 165.50, type: "negative" },
+                { date: new Date(2026, 4, 23), desc: "Restaurant Purchase", sub: "Dining", amount: 78.45, type: "negative" },
+                { date: new Date(2026, 4, 29), desc: "Rent Payment", sub: "Rent", amount: 3700.00, type: "negative" },
+
+                { date: new Date(2026, 5, 3), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 4e1cd26bd9c53N4dWlJOxYru09l"], amount: 18450000.00, type: "positive" },
+                { date: new Date(2026, 5, 7), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4566.00, type: "positive" },
+                { date: new Date(2026, 5, 10), desc: "POS Purchase – Walmart", sub: "POS Purchase", amount: 96.22, type: "negative" },
+                { date: new Date(2026, 5, 14), desc: "ATM Withdrawal", sub: "ATM", amount: 400.00, type: "negative" },
+                { date: new Date(2026, 5, 17), desc: "Online Purchase – Amazon", sub: "Online Purchase", amount: 118.75, type: "negative" },
+                { date: new Date(2026, 5, 21), desc: "Fuel Purchase", sub: "Gas & Fuel", amount: 72.55, type: "negative" },
+                { date: new Date(2026, 5, 25), desc: "Utility Bill Payment", sub: "Bill Pay", amount: 181.25, type: "negative" },
+                { date: new Date(2026, 5, 28), desc: "Restaurant Purchase", sub: "Dining", amount: 95.00, type: "negative" }
             ];
 
-            const transactions = history.map((tx) => {
-                currentDate.setDate(currentDate.getDate() - 1);
-                return {
-                    month: months[currentDate.getMonth()],
-                    day: currentDate.getDate(),
-                    year: currentDate.getFullYear(),
+            const transactions = history
+                .sort((a, b) => b.date - a.date)
+                .map((tx) => ({
+                    month: months[tx.date.getMonth()],
+                    day: tx.date.getDate(),
+                    year: tx.date.getFullYear(),
                     desc: tx.desc,
-                    sub: tx.sub,
+                    sub: tx.sub || null,
+                    meta: tx.meta || null,
                     amount: tx.amount,
                     type: tx.type
-                };
-            });
+                }));
 
             const fragment = document.createDocumentFragment();
             transactions.forEach(tx => {
@@ -226,6 +219,16 @@
                     currency: 'USD'
                 }).format(Math.abs(tx.amount));
                 const sign = tx.type === 'positive' ? '+' : '-';
+                const detailsHtml = tx.meta
+                    ? `<div class="transaction-meta">${tx.meta.map((line) => {
+                        if (line.startsWith('Ref: ')) {
+                            const refCode = line.slice(5);
+                            return `<span class="transaction-meta-line transaction-ref"><span class="transaction-ref-label">Ref:</span><span class="transaction-ref-code">${refCode}</span></span>`;
+                        }
+                        return `<span class="transaction-meta-line">${line}</span>`;
+                    }).join('')}</div>`
+                    : `<p class="transaction-sub">${tx.sub}</p>`;
+
                 item.innerHTML = `
                     <div class="transaction-date">
                         <span class="month">${tx.month}</span>
@@ -234,7 +237,7 @@
                     </div>
                     <div class="transaction-details">
                         <p class="transaction-desc">${tx.desc}</p>
-                        <p class="transaction-sub">${tx.sub}</p>
+                        ${detailsHtml}
                     </div>
                     <div class="transaction-amount ${tx.type}">${sign}${formattedAmount}</div>
                 `;

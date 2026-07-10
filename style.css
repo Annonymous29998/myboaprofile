@@ -5,23 +5,37 @@
     font-family: 'Arial', sans-serif;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 body {
     background-color: #f2f2f2;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .mobile-container {
     width: 100%;
-    max-width: 414px;
-    height: 100vh;
+    max-width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
     background-color: white;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+}
+
+.mobile-container:not(.dashboard-mode) {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .splash-screen {
@@ -224,8 +238,8 @@ h1 {
     margin-bottom: 25px;
 }
 
-.input-label {
-    display: none; /* Hide label, use placeholder as visual cue per image */
+.login-form .input-label {
+    display: none;
 }
 
 .input-wrapper {
@@ -332,11 +346,13 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 2000;
+    padding: 16px;
 }
 
 /* Original Modal (Keep for other pages if needed) */
@@ -474,7 +490,7 @@ h1 {
     text-align: center;
 }
 
-.input-label {
+.security-body .input-label {
     font-size: 14px;
     font-weight: bold;
     color: #333;
@@ -656,16 +672,22 @@ h1 {
 
 .mobile-container.dashboard-mode {
     background-color: #f4f4f4;
-    overflow: hidden; /* Prevent container scroll */
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
 .mobile-container.dashboard-mode .main-content {
-    padding: 20px;
-    flex-grow: 1; /* Take remaining space */
-    overflow-y: auto; /* Scroll internally */
-    /* Remove padding-bottom since nav is no longer absolute */
+    padding: 16px;
+    padding-bottom: 16px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Header */
@@ -673,10 +695,10 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 20px 15px; /* Adjust top padding for status bar */
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px;
     background-color: white;
     border-bottom: 1px solid #e0e0e0;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
     z-index: 100;
 }
 
@@ -689,9 +711,10 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-left: 20px;
+    margin-left: 12px;
     cursor: pointer;
     color: #666;
+    min-width: 0;
 }
 
 .nav-icon {
@@ -897,9 +920,11 @@ h1 {
 }
 
 .account-balance {
-    font-size: 24px;
+    font-size: clamp(18px, 5.4vw, 24px);
     font-weight: bold;
     color: #333;
+    line-height: 1.2;
+    word-break: break-word;
 }
 
 .view-btn {
@@ -949,13 +974,16 @@ h1 {
 /* Bottom Navigation */
 .bottom-nav {
     width: 100%;
+    max-width: 100%;
     background-color: white;
     display: flex;
     justify-content: space-around;
-    padding: 10px 0 25px; /* Extra padding for home indicator */
+    padding: 10px 0 calc(12px + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid #e0e0e0;
     flex-shrink: 0;
     z-index: 100;
+    position: sticky;
+    bottom: 0;
 }
 
 .bottom-nav .nav-item {
@@ -1120,6 +1148,48 @@ h1 {
     align-items: center;
     cursor: pointer;
     border: 2px dashed #ccc;
+    position: relative;
+    overflow: hidden;
+}
+
+.check-photo-input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.photo-box-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+.check-photo-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.photo-box.has-photo .check-photo-preview {
+    display: block;
+}
+
+.photo-box.has-photo .photo-box-content {
+    display: none;
+}
+
+.photo-box.has-photo {
+    border-style: solid;
+    border-color: #0065B3;
+    background-color: #fff;
 }
 
 .camera-icon-circle {
@@ -1291,15 +1361,17 @@ h1 {
 /* Recent Transactions Styles */
 .recent-transactions-section {
     background-color: white;
-    padding: 20px;
+    padding: 16px;
     margin-top: 20px;
-    border-radius: 8px; /* Optional: adds a slight curve if desired, but BofA is usually flat full width on mobile or card based */
+    border-radius: 0;
+    overflow: hidden;
 }
 
 .recent-transactions-section h3 {
     margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 18px;
+    margin-bottom: 12px;
+    font-size: 17px;
+    font-weight: 700;
     color: #333;
 }
 
@@ -1309,10 +1381,12 @@ h1 {
 }
 
 .transaction-item {
-    display: flex;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
+    display: grid;
+    grid-template-columns: minmax(38px, 44px) minmax(0, 1fr) auto;
+    gap: 8px 10px;
+    align-items: start;
+    padding: 14px 0;
+    border-bottom: 1px solid #e8e8e8;
 }
 
 .transaction-item:last-child {
@@ -1323,26 +1397,29 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 50px;
-    margin-right: 15px;
+    justify-content: flex-start;
     color: #666;
+    grid-column: 1;
 }
 
 .transaction-date .month {
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 .transaction-date .day {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 17px;
+    font-weight: 700;
     color: #333;
+    line-height: 1.2;
 }
 
 .transaction-details {
-    flex: 1;
+    min-width: 0;
+    grid-column: 2;
+    overflow: hidden;
 }
 
 .transaction-desc {
@@ -1350,32 +1427,84 @@ h1 {
     font-weight: 600;
     color: #333;
     margin: 0 0 4px 0;
+    line-height: 1.35;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .transaction-sub {
     font-size: 12px;
     color: #666;
     margin: 0;
+    line-height: 1.4;
+}
+
+.transaction-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.transaction-meta-line {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+}
+
+.transaction-ref {
+    color: #888;
+    font-size: 11px;
+    margin-top: 1px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.transaction-ref::-webkit-scrollbar {
+    display: none;
+}
+
+.transaction-ref-label {
+    margin-right: 4px;
+}
+
+.transaction-ref-code {
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
 }
 
 .transaction-amount {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    justify-self: end;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 700;
     text-align: right;
+    line-height: 1.35;
+    padding-top: 1px;
+    white-space: nowrap;
+    max-width: none;
 }
 
 .transaction-amount.positive {
-    color: #008a00; /* Green for deposits */
+    color: #008a00;
 }
 
 .transaction-amount.negative {
-    color: #e31837; /* Bank of America Red */
+    color: #e31837;
 }
 
 .transaction-date .year {
     font-size: 10px;
     color: #999;
     margin-top: 2px;
+    line-height: 1.2;
 }
 
 
@@ -1392,10 +1521,12 @@ h1 {
     margin-bottom: 5px;
 }
 .invest-total-amount {
-    font-size: 32px;
+    font-size: clamp(24px, 7vw, 32px);
     font-weight: 300;
     color: #333;
     margin-bottom: 5px;
+    line-height: 1.2;
+    word-break: break-word;
 }
 .invest-change {
     font-size: 14px;
@@ -1447,6 +1578,8 @@ h1 {
     text-align: right;
     font-weight: bold;
     color: #333;
+    font-size: clamp(14px, 4vw, 16px);
+    word-break: break-word;
 }
 .holding-change {
     text-align: right;
@@ -1466,39 +1599,174 @@ h1 {
     text-transform: uppercase;
 }
 
-/* Responsive Mobile View Only */
-@media only screen and (max-width: 480px) {
+/* Responsive - all devices */
+@media screen and (max-width: 360px) {
+    .main-content {
+        padding: 16px;
+    }
+
+    .splash-screen {
+        padding: 50px 16px 32px;
+    }
+
+    .splash-logo-wrap {
+        margin-top: 60px;
+    }
+
+    .splash-brand {
+        font-size: 14px;
+        letter-spacing: 3px;
+    }
+
+    .nav-text,
+    .bottom-nav .nav-item span {
+        font-size: 9px;
+    }
+
+    .nav-icon {
+        font-size: 18px;
+    }
+
+    .nav-item {
+        margin-left: 8px;
+    }
+
+    .account-item {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .view-btn {
+        margin-left: auto;
+    }
+
+    .pay-options-grid {
+        gap: 10px;
+    }
+
+    .pay-option-card {
+        padding: 14px 10px;
+    }
+
+    .pay-option-text {
+        font-size: 12px;
+    }
+
+    .transaction-item {
+        grid-template-columns: minmax(34px, 38px) minmax(0, 1fr) auto;
+        gap: 6px 8px;
+        padding: 12px 0;
+    }
+
+    .transaction-date .day {
+        font-size: 15px;
+    }
+
+    .transaction-desc {
+        font-size: 13px;
+    }
+
+    .transaction-sub,
+    .transaction-meta-line {
+        font-size: 11px;
+    }
+
+    .transaction-amount {
+        font-size: 13px;
+    }
+
+    .invest-total-amount {
+        font-size: 26px;
+    }
+
+    .holding-item {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 14px 16px;
+    }
+}
+
+@media screen and (max-width: 480px) {
     body {
         background-color: white;
-        align-items: flex-start;
-        height: auto;
-        min-height: 100vh;
+        align-items: stretch;
     }
+
     .mobile-container {
         max-width: 100%;
-        height: auto;
         min-height: 100vh;
-        border-radius: 0;
-        box-shadow: none;
-        overflow: visible; /* Let body handle scroll */
+        min-height: 100dvh;
     }
+
     .main-content {
-        overflow: visible;
+        padding: 16px 20px;
     }
-    /* Ensure fixed headers/footers work if used */
+
+    .recent-transactions-section {
+        margin-left: -16px;
+        margin-right: -16px;
+        padding: 16px;
+    }
+
     .top-nav {
         position: sticky;
         top: 0;
-        z-index: 100;
     }
-    .bottom-nav {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        z-index: 100;
+}
+
+@media screen and (min-width: 481px) and (max-width: 767px) {
+    body {
+        background-color: #f2f2f2;
+        align-items: center;
     }
-    .main-content {
-        padding-bottom: 80px; /* Space for bottom nav */
+
+    .mobile-container {
+        max-width: 430px;
+        box-shadow: 0 0 24px rgba(0, 0, 0, 0.08);
+    }
+}
+
+@media screen and (min-width: 768px) {
+    body {
+        background-color: #f2f2f2;
+        align-items: center;
+        padding: 16px 0;
+    }
+
+    .mobile-container {
+        max-width: 430px;
+        min-height: calc(100vh - 32px);
+        min-height: calc(100dvh - 32px);
+        height: calc(100vh - 32px);
+        height: calc(100dvh - 32px);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .mobile-container.dashboard-mode {
+        height: calc(100vh - 32px);
+        height: calc(100dvh - 32px);
+    }
+}
+
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    .splash-logo-wrap {
+        margin-top: 20px;
+    }
+
+    .splash-screen {
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    .header {
+        padding-top: 24px;
+    }
+
+    .top-nav {
+        padding-top: calc(8px + env(safe-area-inset-top, 0px));
     }
 }
 
