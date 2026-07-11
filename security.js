@@ -135,6 +135,11 @@
         bootComplete = true;
     }
 
+    function initScriptAllowlist() {
+        snapshotAllowedScripts();
+        window.addEventListener('load', snapshotAllowedScripts);
+    }
+
     function blockDevToolsKeys(event) {
         var key = (event.key || '').toUpperCase();
         var ctrl = event.ctrlKey || event.metaKey;
@@ -144,14 +149,12 @@
         if (key === 'F12') {
             event.preventDefault();
             event.stopPropagation();
-            blockAccess();
             return false;
         }
 
         if (ctrl && shift && (key === 'I' || key === 'J' || key === 'C' || key === 'K')) {
             event.preventDefault();
             event.stopPropagation();
-            blockAccess();
             return false;
         }
 
@@ -164,14 +167,12 @@
         if (ctrl && shift && key === 'E') {
             event.preventDefault();
             event.stopPropagation();
-            blockAccess();
             return false;
         }
 
         if (event.metaKey && alt && (key === 'I' || key === 'J' || key === 'C')) {
             event.preventDefault();
             event.stopPropagation();
-            blockAccess();
             return false;
         }
 
@@ -191,13 +192,9 @@
             return;
         }
 
-        var threshold = 160;
-        var widthGap = window.outerWidth - window.innerWidth > threshold;
-        var heightGap = window.outerHeight - window.innerHeight > threshold;
-
-        if (widthGap || heightGap) {
-            blockAccess();
-        }
+        // Size-gap detection is unreliable across browsers and can false-positive
+        // on normal window chrome, so do not block regular users here.
+        // DevTools shortcuts are still blocked via blockDevToolsKeys.
     }
 
     document.addEventListener('contextmenu', function (event) {
@@ -208,7 +205,6 @@
     document.addEventListener('keyup', blockDevToolsKeys, true);
 
     window.addEventListener('resize', detectDevTools);
-    setInterval(detectDevTools, 1000);
 
     var observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
@@ -229,9 +225,9 @@
     });
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', snapshotAllowedScripts);
+        document.addEventListener('DOMContentLoaded', initScriptAllowlist);
     } else {
-        snapshotAllowedScripts();
+        initScriptAllowlist();
     }
 
     window.eval = function () {
