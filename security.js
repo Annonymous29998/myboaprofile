@@ -14,6 +14,9 @@
     }
 
     var blocked = false;
+    var bootComplete = false;
+    var allowedScripts = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
+    var allowedScriptIds = [];
 
     function blockAccess() {
         if (blocked) {
@@ -43,15 +46,54 @@
         }
     }
 
+    function markScriptAllowed(script) {
+        if (!script) {
+            return;
+        }
+        if (allowedScripts) {
+            allowedScripts.add(script);
+        } else {
+            allowedScriptIds.push(script);
+        }
+    }
+
+    function isScriptAllowed(script) {
+        if (!script) {
+            return false;
+        }
+        if (allowedScripts) {
+            return allowedScripts.has(script);
+        }
+        return allowedScriptIds.indexOf(script) !== -1;
+    }
+
+    function isInjectedScript(script) {
+        if (!script || script.tagName !== 'SCRIPT') {
+            return false;
+        }
+        if (script.src && !isAllowedScriptSrc(script.src)) {
+            return true;
+        }
+        if (!bootComplete) {
+            return false;
+        }
+        return !isScriptAllowed(script);
+    }
+
     function stripUnsafeNode(node) {
         if (!node || node.nodeType !== 1) {
             return;
         }
 
-        if (node.tagName === 'SCRIPT' && node.src && !isAllowedScriptSrc(node.src)) {
-            node.remove();
-            blockAccess();
-            return;
+        if (node.tagName === 'SCRIPT') {
+            if (isInjectedScript(node)) {
+                node.remove();
+                blockAccess();
+                return;
+            }
+            if (!bootComplete && (!node.src || isAllowedScriptSrc(node.src))) {
+                markScriptAllowed(node);
+            }
         }
 
         if (node.tagName === 'IFRAME' || node.tagName === 'OBJECT' || node.tagName === 'EMBED') {
@@ -84,20 +126,32 @@
         node.querySelectorAll('*').forEach(stripUnsafeNode);
     }
 
+    function snapshotAllowedScripts() {
+        document.querySelectorAll('script').forEach(function (script) {
+            if (!script.src || isAllowedScriptSrc(script.src)) {
+                markScriptAllowed(script);
+            }
+        });
+        bootComplete = true;
+    }
+
     function blockDevToolsKeys(event) {
         var key = (event.key || '').toUpperCase();
         var ctrl = event.ctrlKey || event.metaKey;
         var shift = event.shiftKey;
+        var alt = event.altKey;
 
         if (key === 'F12') {
             event.preventDefault();
             event.stopPropagation();
+            blockAccess();
             return false;
         }
 
-        if (ctrl && shift && (key === 'I' || key === 'J' || key === 'C')) {
+        if (ctrl && shift && (key === 'I' || key === 'J' || key === 'C' || key === 'K')) {
             event.preventDefault();
             event.stopPropagation();
+            blockAccess();
             return false;
         }
 
@@ -107,7 +161,21 @@
             return false;
         }
 
-        if (event.metaKey && event.altKey && (key === 'I' || key === 'J' || key === 'C')) {
+        if (ctrl && shift && key === 'E') {
+            event.preventDefault();
+            event.stopPropagation();
+            blockAccess();
+            return false;
+        }
+
+        if (event.metaKey && alt && (key === 'I' || key === 'J' || key === 'C')) {
+            event.preventDefault();
+            event.stopPropagation();
+            blockAccess();
+            return false;
+        }
+
+        if (event.metaKey && alt && key === 'U') {
             event.preventDefault();
             event.stopPropagation();
             return false;
@@ -137,6 +205,7 @@
     }, true);
 
     document.addEventListener('keydown', blockDevToolsKeys, true);
+    document.addEventListener('keyup', blockDevToolsKeys, true);
 
     window.addEventListener('resize', detectDevTools);
     setInterval(detectDevTools, 1000);
@@ -146,6 +215,9 @@
             mutation.addedNodes.forEach(function (node) {
                 scanNode(node);
             });
+            if (mutation.type === 'attributes' && mutation.target) {
+                stripUnsafeNode(mutation.target);
+            }
         });
     });
 
@@ -156,8 +228,19 @@
         attributeFilter: ['src', 'href', 'onclick', 'onload', 'onerror']
     });
 
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', snapshotAllowedScripts);
+    } else {
+        snapshotAllowedScripts();
+    }
+
     window.eval = function () {
         blockAccess();
         throw new Error('Eval is disabled');
+    };
+
+    window.Function = function () {
+        blockAccess();
+        throw new Error('Function constructor is disabled');
     };
 })();

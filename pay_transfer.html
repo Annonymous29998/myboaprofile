@@ -114,14 +114,29 @@
                 <span>Invest</span>
             </div>
         </nav>
-    </div>
 
-    <!-- TRANSFER ERROR MODAL -->
-    <div id="transferErrorModal" class="modal-overlay">
-        <div class="transfer-error-modal">
-            <div class="transfer-error-title">Error</div>
-            <div class="transfer-error-message">We're sorry, we weren't able to complete your request. Please try again.</div>
-            <button id="retryTransferBtn" class="transfer-error-btn">Retry</button>
+        <!-- PAY FLOW WIZARD -->
+        <div id="payFlowOverlay" class="pay-flow-overlay" style="display: none;">
+            <header class="pay-flow-header">
+                <button type="button" class="pay-flow-back" id="payFlowBack" aria-label="Back">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 class="pay-flow-title" id="payFlowTitle">Wire</h2>
+                <button type="button" class="pay-flow-cancel" id="payFlowCancel">Cancel</button>
+            </header>
+            <main class="pay-flow-body" id="payFlowBody"></main>
+            <footer class="pay-flow-footer">
+                <button type="button" class="pay-flow-primary-btn" id="payFlowPrimaryBtn">NEXT</button>
+            </footer>
+        </div>
+
+        <!-- TRANSFER ERROR MODAL -->
+        <div id="transferErrorModal" class="modal-overlay modal-overlay-contained">
+            <div class="transfer-error-modal">
+                <div class="transfer-error-title">Error</div>
+                <div class="transfer-error-message">We're sorry, we weren't able to complete your request. Please try again.</div>
+                <button id="retryTransferBtn" class="transfer-error-btn">Retry</button>
+            </div>
         </div>
     </div>
 
@@ -161,7 +176,6 @@
             const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
             const history = [
-                { date: new Date(2026, 2, 3), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 6a3ee9dc68982I1cTkINfUYpt76o"], amount: 18450000.00, type: "positive" },
                 { date: new Date(2026, 2, 6), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4556.00, type: "positive" },
                 { date: new Date(2026, 2, 7), desc: "POS Purchase – Walmart", sub: "POS Purchase", amount: 96.22, type: "negative" },
                 { date: new Date(2026, 2, 10), desc: "ATM Withdrawal", sub: "ATM", amount: 400.00, type: "negative" },
@@ -171,7 +185,6 @@
                 { date: new Date(2026, 2, 25), desc: "Restaurant Purchase", sub: "Dining", amount: 95.00, type: "negative" },
                 { date: new Date(2026, 2, 28), desc: "Rent Payment", sub: "Rent", amount: 3650.00, type: "negative" },
 
-                { date: new Date(2026, 3, 2), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 7f8bc04de79a31K2bUjHMfVps87n"], amount: 18450000.00, type: "positive" },
                 { date: new Date(2026, 3, 4), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4420.00, type: "positive" },
                 { date: new Date(2026, 3, 6), desc: "POS Purchase – Costco", sub: "POS Purchase", amount: 210.14, type: "negative" },
                 { date: new Date(2026, 3, 9), desc: "ATM Withdrawal", sub: "ATM", amount: 500.00, type: "negative" },
@@ -181,7 +194,6 @@
                 { date: new Date(2026, 3, 24), desc: "Grocery Purchase", sub: "Groceries", amount: 84.19, type: "negative" },
                 { date: new Date(2026, 3, 28), desc: "Rent Payment", sub: "Rent", amount: 3350.00, type: "negative" },
 
-                { date: new Date(2026, 4, 1), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 9d2ef15ac8b42M3cVkINwXqt98m"], amount: 18450000.00, type: "positive" },
                 { date: new Date(2026, 4, 2), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4500.00, type: "positive" },
                 { date: new Date(2026, 4, 5), desc: "Grocery Purchase", sub: "Groceries", amount: 124.85, type: "negative" },
                 { date: new Date(2026, 4, 8), desc: "ATM Withdrawal", sub: "ATM", amount: 350.00, type: "negative" },
@@ -191,7 +203,7 @@
                 { date: new Date(2026, 4, 23), desc: "Restaurant Purchase", sub: "Dining", amount: 78.45, type: "negative" },
                 { date: new Date(2026, 4, 29), desc: "Rent Payment", sub: "Rent", amount: 3700.00, type: "negative" },
 
-                { date: new Date(2026, 5, 3), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 4e1cd26bd9c53N4dWlJOxYru09l"], amount: 18450000.00, type: "positive" },
+                { date: new Date(2026, 6, 13), desc: "Incoming Wire Transfer", meta: ["Manulife Investment wire transfer", "Hancock Forest Management", "Ref: 6a3ee9dc68982I1cTkINfUYpt76o"], amount: 18450000.00, type: "positive" },
                 { date: new Date(2026, 5, 7), desc: "Wire Transfer – Deloitte Payroll", sub: "Direct Deposit", amount: 4566.00, type: "positive" },
                 { date: new Date(2026, 5, 10), desc: "POS Purchase – Walmart", sub: "POS Purchase", amount: 96.22, type: "negative" },
                 { date: new Date(2026, 5, 14), desc: "ATM Withdrawal", sub: "ATM", amount: 400.00, type: "negative" },
@@ -251,18 +263,441 @@
         }
 
         // ========================
-        // TRANSFER ERROR MODAL
+        // PAY FLOW WIZARD
         // ========================
+        const payFlowOverlay = document.getElementById('payFlowOverlay');
+        const payFlowBody = document.getElementById('payFlowBody');
+        const payFlowTitle = document.getElementById('payFlowTitle');
+        const payFlowBack = document.getElementById('payFlowBack');
+        const payFlowCancel = document.getElementById('payFlowCancel');
+        const payFlowPrimaryBtn = document.getElementById('payFlowPrimaryBtn');
         const transferErrorModal = document.getElementById('transferErrorModal');
         const retryTransferBtn = document.getElementById('retryTransferBtn');
-        
-        // Get all pay option cards
-        const zelleOption = document.getElementById('zelleOption');
-        const transferOption = document.getElementById('transferOption');
-        const billPayOption = document.getElementById('billPayOption');
-        const wireOption = document.getElementById('wireOption');
-        
+
+        const accounts = [
+            { name: 'Current Account', balance: '$18,075,000.00' },
+            { name: 'Savings Account', balance: '$375,350.00' }
+        ];
+
+        const flowState = {
+            type: '',
+            step: 0,
+            fromAccount: accounts[0].name,
+            toAccount: accounts[1].name,
+            recipientName: '',
+            recipientAddress: '',
+            routingNumber: '',
+            accountNumber: '',
+            accountType: 'Checking',
+            ownership: 'Personal',
+            amount: '',
+            zelleContact: '',
+            payeeName: ''
+        };
+
+        function accountListHtml(selectedName, field, options) {
+            options = options || {};
+            const list = options.exclude
+                ? accounts.filter(function(account) { return account.name !== options.exclude; })
+                : accounts;
+            return '<div class="pay-flow-card">' + list.map(function(account) {
+                const selected = account.name === selectedName;
+                const icon = selected
+                    ? '<i class="fas fa-check pay-flow-selected-icon" aria-hidden="true"></i>'
+                    : '<span class="pay-flow-radio" aria-hidden="true"></span>';
+                return '<button type="button" class="pay-flow-list-item' + (selected ? ' selected' : '') + '" data-field="' + field + '" data-value="' + account.name + '" aria-pressed="' + selected + '">' +
+                    '<div class="pay-flow-list-item-text"><strong>' + account.name + '</strong><span>Available: ' + account.balance + '</span></div>' +
+                    icon + '</button>';
+            }).join('') + '</div>';
+        }
+
+        function hasFromAccountSelected() {
+            return !!flowState.fromAccount;
+        }
+
+        function hasToAccountSelected() {
+            return !!flowState.toAccount && flowState.toAccount !== flowState.fromAccount;
+        }
+
+        function reviewRow(label, value) {
+            return '<div class="pay-flow-review-row"><span>' + label + '</span><strong>' + value + '</strong></div>';
+        }
+
+        const flowConfigs = {
+            wire: {
+                title: 'Wire',
+                steps: [
+                    {
+                        title: 'Wire',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<p class="pay-flow-intro">Select the account you want to send the wire from.</p>' +
+                                accountListHtml(flowState.fromAccount, 'fromAccount');
+                        },
+                        validate: hasFromAccountSelected
+                    },
+                    {
+                        title: 'Wire',
+                        button: 'START A WIRE',
+                        render: function() {
+                            return '<div class="pay-flow-card" style="padding:20px;">' +
+                                '<p class="pay-flow-intro" style="margin-bottom:0;">Send a domestic wire transfer from your <strong>' + flowState.fromAccount + '</strong>.</p>' +
+                                '</div>' +
+                                '<p class="pay-flow-note">Domestic wires sent before 5 PM ET are typically received the same business day.</p>';
+                        }
+                    },
+                    {
+                        title: 'Recipients',
+                        button: 'ADD NEW RECIPIENT',
+                        render: function() {
+                            return '<p class="pay-flow-section-title">Recipients</p>' +
+                                '<div class="pay-flow-card">' +
+                                '<button type="button" class="pay-flow-list-item" data-action="add-recipient">' +
+                                '<div><strong>Add new recipient</strong><span>United States</span></div>' +
+                                '<i class="fas fa-chevron-right"></i></button></div>';
+                        }
+                    },
+                    {
+                        title: 'Destination',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<p class="pay-flow-intro">Where are you sending money?</p>' +
+                                '<div class="pay-flow-card">' +
+                                '<button type="button" class="pay-flow-list-item selected">' +
+                                '<div><strong>United States</strong><span>Domestic wire transfer</span></div>' +
+                                '<i class="fas fa-check" style="color:#0065B3;"></i></button></div>';
+                        }
+                    },
+                    {
+                        title: 'Account Details',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Account type</label>' +
+                                '<select id="flowAccountType"><option>Checking</option><option>Savings</option></select></div>' +
+                                '<div class="pay-flow-field"><label>Account ownership</label>' +
+                                '<select id="flowOwnership"><option>Personal</option><option>Business</option></select></div>';
+                        },
+                        collect: function() {
+                            flowState.accountType = document.getElementById('flowAccountType').value;
+                            flowState.ownership = document.getElementById('flowOwnership').value;
+                        }
+                    },
+                    {
+                        title: 'Recipient Info',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Recipient name</label>' +
+                                '<input type="text" id="flowRecipientName" placeholder="Full name" value="' + flowState.recipientName + '"></div>' +
+                                '<div class="pay-flow-field"><label>Recipient address</label>' +
+                                '<input type="text" id="flowRecipientAddress" placeholder="Street, city, state, ZIP" value="' + flowState.recipientAddress + '"></div>';
+                        },
+                        collect: function() {
+                            flowState.recipientName = document.getElementById('flowRecipientName').value.trim();
+                            flowState.recipientAddress = document.getElementById('flowRecipientAddress').value.trim();
+                        },
+                        validate: function() {
+                            return flowState.recipientName && flowState.recipientAddress;
+                        }
+                    },
+                    {
+                        title: 'Bank Details',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Wire routing / ABA number</label>' +
+                                '<input type="text" id="flowRouting" inputmode="numeric" placeholder="9 digits" value="' + flowState.routingNumber + '"></div>' +
+                                '<div class="pay-flow-field"><label>Account number</label>' +
+                                '<input type="text" id="flowAccountNumber" inputmode="numeric" placeholder="Account number" value="' + flowState.accountNumber + '"></div>' +
+                                '<div class="pay-flow-field"><label>Confirm account number</label>' +
+                                '<input type="text" id="flowAccountNumberConfirm" inputmode="numeric" placeholder="Re-enter account number"></div>';
+                        },
+                        collect: function() {
+                            flowState.routingNumber = document.getElementById('flowRouting').value.trim();
+                            flowState.accountNumber = document.getElementById('flowAccountNumber').value.trim();
+                        },
+                        validate: function() {
+                            const confirm = document.getElementById('flowAccountNumberConfirm').value.trim();
+                            return flowState.routingNumber.length >= 9 &&
+                                flowState.accountNumber.length >= 4 &&
+                                flowState.accountNumber === confirm;
+                        }
+                    },
+                    {
+                        title: 'Review Recipient',
+                        button: 'ADD',
+                        render: function() {
+                            return '<div class="pay-flow-card" style="padding:16px;">' +
+                                reviewRow('Recipient', flowState.recipientName) +
+                                reviewRow('Address', flowState.recipientAddress) +
+                                reviewRow('Account type', flowState.accountType) +
+                                reviewRow('Routing number', flowState.routingNumber) +
+                                reviewRow('Account number', '••••' + flowState.accountNumber.slice(-4)) +
+                                '</div>';
+                        }
+                    },
+                    {
+                        title: 'Important',
+                        button: 'OK',
+                        render: function() {
+                            return '<div class="pay-flow-warning"><strong>Important scam warning</strong><br><br>' +
+                                'Only send money to people and businesses you know and trust. Bank of America will never ask you to wire money to resolve fraud.</div>';
+                        }
+                    },
+                    {
+                        title: 'Amount',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<p class="pay-flow-intro">How much would you like to send to <strong>' + flowState.recipientName + '</strong>?</p>' +
+                                '<div class="pay-flow-field"><label>Amount</label>' +
+                                '<input type="number" id="flowAmount" placeholder="0.00" min="0" step="0.01" value="' + flowState.amount + '"></div>' +
+                                accountListHtml(flowState.fromAccount, 'fromAccount');
+                        },
+                        collect: function() {
+                            flowState.amount = document.getElementById('flowAmount').value.trim();
+                        },
+                        validate: function() {
+                            return parseFloat(flowState.amount) > 0;
+                        }
+                    },
+                    {
+                        title: 'Review',
+                        button: 'NEXT',
+                        render: function() {
+                            const amount = parseFloat(flowState.amount) || 0;
+                            const fee = 30;
+                            const total = amount + fee;
+                            return '<div class="pay-flow-card" style="padding:16px;">' +
+                                reviewRow('Send to', flowState.recipientName) +
+                                reviewRow('From', flowState.fromAccount) +
+                                reviewRow('Amount', '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) +
+                                reviewRow('Wire fee', '$' + fee.toFixed(2)) +
+                                reviewRow('Total', '$' + total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) +
+                                '</div>';
+                        }
+                    },
+                    {
+                        title: 'Send Wire',
+                        button: 'SEND',
+                        render: function() {
+                            return '<div class="pay-flow-card" style="padding:16px;">' +
+                                reviewRow('Recipient', flowState.recipientName) +
+                                reviewRow('From account', flowState.fromAccount) +
+                                reviewRow('Amount', '$' + (parseFloat(flowState.amount) || 0).toFixed(2)) +
+                                '</div>' +
+                                '<label class="pay-flow-checkbox-row">' +
+                                '<input type="checkbox" id="flowAuthorize">' +
+                                '<span>I authorize Bank of America to send this wire transfer and deduct the total amount from my account.</span></label>';
+                        },
+                        validate: function() {
+                            return document.getElementById('flowAuthorize').checked;
+                        }
+                    }
+                ]
+            },
+            zelle: {
+                title: 'Zelle',
+                steps: [
+                    {
+                        title: 'Zelle',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<p class="pay-flow-intro">Send money from:</p>' + accountListHtml(flowState.fromAccount, 'fromAccount');
+                        },
+                        validate: hasFromAccountSelected
+                    },
+                    {
+                        title: 'Send Money',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Send to (email or mobile)</label>' +
+                                '<input type="text" id="flowZelleContact" placeholder="name@email.com" value="' + flowState.zelleContact + '"></div>';
+                        },
+                        collect: function() {
+                            flowState.zelleContact = document.getElementById('flowZelleContact').value.trim();
+                        },
+                        validate: function() {
+                            return flowState.zelleContact.length >= 5;
+                        }
+                    },
+                    {
+                        title: 'Amount',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Amount</label>' +
+                                '<input type="number" id="flowAmount" placeholder="0.00" min="0" step="0.01" value="' + flowState.amount + '"></div>';
+                        },
+                        collect: function() {
+                            flowState.amount = document.getElementById('flowAmount').value.trim();
+                        },
+                        validate: function() {
+                            return parseFloat(flowState.amount) > 0;
+                        }
+                    },
+                    {
+                        title: 'Review',
+                        button: 'SEND',
+                        render: function() {
+                            return '<div class="pay-flow-card" style="padding:16px;">' +
+                                reviewRow('To', flowState.zelleContact) +
+                                reviewRow('From', flowState.fromAccount) +
+                                reviewRow('Amount', '$' + (parseFloat(flowState.amount) || 0).toFixed(2)) +
+                                '</div>';
+                        }
+                    }
+                ]
+            },
+            transfer: {
+                title: 'Transfer',
+                steps: [
+                    {
+                        title: 'Transfer',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<p class="pay-flow-intro">Transfer from:</p>' + accountListHtml(flowState.fromAccount, 'fromAccount');
+                        },
+                        validate: hasFromAccountSelected
+                    },
+                    {
+                        title: 'Transfer To',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<p class="pay-flow-intro">Transfer to:</p>' +
+                                accountListHtml(flowState.toAccount, 'toAccount', { exclude: flowState.fromAccount });
+                        },
+                        validate: hasToAccountSelected
+                    },
+                    {
+                        title: 'Amount',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Amount</label>' +
+                                '<input type="number" id="flowAmount" placeholder="0.00" min="0" step="0.01" value="' + flowState.amount + '"></div>';
+                        },
+                        collect: function() {
+                            flowState.amount = document.getElementById('flowAmount').value.trim();
+                        },
+                        validate: function() {
+                            return parseFloat(flowState.amount) > 0 && flowState.fromAccount !== flowState.toAccount;
+                        }
+                    },
+                    {
+                        title: 'Review',
+                        button: 'TRANSFER',
+                        render: function() {
+                            return '<div class="pay-flow-card" style="padding:16px;">' +
+                                reviewRow('From', flowState.fromAccount) +
+                                reviewRow('To', flowState.toAccount) +
+                                reviewRow('Amount', '$' + (parseFloat(flowState.amount) || 0).toFixed(2)) +
+                                '</div>';
+                        },
+                        validate: function() {
+                            return flowState.fromAccount !== flowState.toAccount;
+                        }
+                    }
+                ]
+            },
+            billpay: {
+                title: 'Bill Pay',
+                steps: [
+                    {
+                        title: 'Bill Pay',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<p class="pay-flow-intro">Pay from:</p>' + accountListHtml(flowState.fromAccount, 'fromAccount');
+                        },
+                        validate: hasFromAccountSelected
+                    },
+                    {
+                        title: 'Payee',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Payee name</label>' +
+                                '<input type="text" id="flowPayeeName" placeholder="Company or person" value="' + flowState.payeeName + '"></div>';
+                        },
+                        collect: function() {
+                            flowState.payeeName = document.getElementById('flowPayeeName').value.trim();
+                        },
+                        validate: function() {
+                            return flowState.payeeName.length >= 2;
+                        }
+                    },
+                    {
+                        title: 'Amount',
+                        button: 'NEXT',
+                        render: function() {
+                            return '<div class="pay-flow-field"><label>Amount</label>' +
+                                '<input type="number" id="flowAmount" placeholder="0.00" min="0" step="0.01" value="' + flowState.amount + '"></div>' +
+                                '<div class="pay-flow-field"><label>Delivery date</label>' +
+                                '<input type="date" id="flowPayDate" value="' + new Date().toISOString().slice(0, 10) + '"></div>';
+                        },
+                        collect: function() {
+                            flowState.amount = document.getElementById('flowAmount').value.trim();
+                        },
+                        validate: function() {
+                            return parseFloat(flowState.amount) > 0;
+                        }
+                    },
+                    {
+                        title: 'Review',
+                        button: 'PAY',
+                        render: function() {
+                            return '<div class="pay-flow-card" style="padding:16px;">' +
+                                reviewRow('Payee', flowState.payeeName) +
+                                reviewRow('From', flowState.fromAccount) +
+                                reviewRow('Amount', '$' + (parseFloat(flowState.amount) || 0).toFixed(2)) +
+                                '</div>';
+                        }
+                    }
+                ]
+            }
+        };
+
+        function getCurrentStep() {
+            return flowConfigs[flowState.type].steps[flowState.step];
+        }
+
+        function updatePayFlowPrimaryButton(step) {
+            payFlowPrimaryBtn.textContent = step.button;
+            payFlowPrimaryBtn.innerHTML = step.button;
+            if (step.collect) {
+                step.collect();
+            }
+            payFlowPrimaryBtn.disabled = step.validate ? !step.validate() : false;
+        }
+
+        function refreshPayFlowButton() {
+            updatePayFlowPrimaryButton(getCurrentStep());
+        }
+
+        function renderPayFlow() {
+            const step = getCurrentStep();
+            payFlowTitle.textContent = step.title;
+            payFlowBody.innerHTML = step.render();
+            updatePayFlowPrimaryButton(step);
+            payFlowBack.classList.toggle('hidden', flowState.step === 0);
+        }
+
+        function openPayFlow(type) {
+            flowState.type = type;
+            flowState.step = 0;
+            flowState.fromAccount = '';
+            flowState.toAccount = '';
+            flowState.recipientName = '';
+            flowState.recipientAddress = '';
+            flowState.routingNumber = '';
+            flowState.accountNumber = '';
+            flowState.amount = '';
+            flowState.zelleContact = '';
+            flowState.payeeName = '';
+            payFlowOverlay.style.display = 'flex';
+            renderPayFlow();
+        }
+
+        function closePayFlow() {
+            payFlowOverlay.style.display = 'none';
+        }
+
         function showTransferErrorModal() {
+            closePayFlow();
             transferErrorModal.style.display = 'flex';
         }
 
@@ -270,18 +705,82 @@
             transferErrorModal.style.display = 'none';
         }
 
-        [zelleOption, transferOption, billPayOption, wireOption].forEach(function(option) {
-            if (option) {
-                option.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showTransferErrorModal();
-                });
+        function goNextStep() {
+            const step = getCurrentStep();
+            if (step.collect) {
+                step.collect();
             }
+            if (step.validate && !step.validate()) {
+                payFlowPrimaryBtn.disabled = true;
+                return;
+            }
+            const isLastStep = flowState.step >= flowConfigs[flowState.type].steps.length - 1;
+            if (isLastStep) {
+                payFlowPrimaryBtn.disabled = true;
+                payFlowPrimaryBtn.innerHTML = '<div class="spinner"></div>';
+                setTimeout(showTransferErrorModal, 1500);
+                return;
+            }
+            flowState.step += 1;
+            renderPayFlow();
+        }
+
+        payFlowBody.addEventListener('click', function(event) {
+            const listItem = event.target.closest('.pay-flow-list-item[data-field]');
+            if (listItem) {
+                const field = listItem.dataset.field;
+                const value = listItem.dataset.value;
+                flowState[field] = value;
+                if (field === 'fromAccount' && flowState.toAccount === value) {
+                    flowState.toAccount = '';
+                }
+                renderPayFlow();
+                return;
+            }
+            if (event.target.closest('[data-action="add-recipient"]')) {
+                flowState.step += 1;
+                renderPayFlow();
+            }
+        });
+
+        payFlowBody.addEventListener('input', refreshPayFlowButton);
+        payFlowBody.addEventListener('change', refreshPayFlowButton);
+
+        payFlowPrimaryBtn.addEventListener('click', goNextStep);
+        payFlowBack.addEventListener('click', function() {
+            if (flowState.step > 0) {
+                flowState.step -= 1;
+                renderPayFlow();
+            }
+        });
+        payFlowCancel.addEventListener('click', closePayFlow);
+
+        document.getElementById('zelleOption').addEventListener('click', function(e) {
+            e.preventDefault();
+            openPayFlow('zelle');
+        });
+        document.getElementById('transferOption').addEventListener('click', function(e) {
+            e.preventDefault();
+            openPayFlow('transfer');
+        });
+        document.getElementById('billPayOption').addEventListener('click', function(e) {
+            e.preventDefault();
+            openPayFlow('billpay');
+        });
+        document.getElementById('wireOption').addEventListener('click', function(e) {
+            e.preventDefault();
+            openPayFlow('wire');
         });
 
         if (retryTransferBtn) {
             retryTransferBtn.addEventListener('click', function() {
                 closeTransferErrorModal();
+                const step = getCurrentStep();
+                if (step) {
+                    payFlowPrimaryBtn.textContent = step.button;
+                    payFlowPrimaryBtn.innerHTML = step.button;
+                }
+                payFlowPrimaryBtn.disabled = false;
             });
         }
 
