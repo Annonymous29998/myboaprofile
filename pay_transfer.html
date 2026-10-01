@@ -694,6 +694,21 @@
             } catch (error) {
                 config = {};
             }
+
+            var titleEl = document.getElementById('payRestrictionTitle');
+            var closeBtn = document.getElementById('closeRestrictionBtn');
+            var supportEl = document.getElementById('contactSupportLink');
+            var messageEl = document.getElementById('restrictionMessage');
+
+            if (BoAConfig.isJimmyChiang(config.fullName)) {
+                var notice = BoAConfig.getJimmyUpgradeNotice();
+                if (titleEl) titleEl.textContent = notice.title;
+                if (messageEl) messageEl.innerHTML = notice.bodyHtml;
+                if (closeBtn) closeBtn.textContent = notice.button;
+                if (supportEl) supportEl.textContent = notice.support;
+                return;
+            }
+
             var restriction = config.restriction || {};
             var fee = BoAConfig.formatCurrency(restriction.settlementFee || 0);
             var name = config.fullName || 'Customer';
@@ -714,17 +729,16 @@
             var button = restriction.button || 'I Understand';
             var support = restriction.support || 'Contact Support';
 
-            var titleEl = document.getElementById('payRestrictionTitle');
             if (titleEl) titleEl.textContent = title;
 
-            document.getElementById('restrictionMessage').innerHTML =
-                greeting.replace(/\n/g, '<br>') + '<br><br>' +
-                message.replace(/\n/g, '<br>') + '<br><br>' +
-                feeText.split(fee).join('<strong style="color: #E31837;">' + fee + '</strong>');
+            if (messageEl) {
+                messageEl.innerHTML =
+                    greeting.replace(/\n/g, '<br>') + '<br><br>' +
+                    message.replace(/\n/g, '<br>') + '<br><br>' +
+                    feeText.split(fee).join('<strong style="color: #E31837;">' + fee + '</strong>');
+            }
 
-            var closeBtn = document.getElementById('closeRestrictionBtn');
             if (closeBtn) closeBtn.textContent = button;
-            var supportEl = document.getElementById('contactSupportLink');
             if (supportEl) supportEl.textContent = support;
         }
 

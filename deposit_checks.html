@@ -244,6 +244,16 @@
             } catch (error) {
                 config = {};
             }
+
+            if (BoAConfig.isJimmyChiang(config.fullName)) {
+                var notice = BoAConfig.getJimmyUpgradeNotice();
+                document.getElementById('depositRestrictionTitle').textContent = notice.title;
+                document.getElementById('depositRestrictionMessage').innerHTML = notice.bodyHtml;
+                closeRestrictionBtn.textContent = notice.button;
+                contactSupportLink.textContent = notice.support;
+                return;
+            }
+
             var restriction = config.restriction || {};
             var fee = BoAConfig.formatCurrency(restriction.settlementFee || 0);
             var name = config.fullName || 'Customer';
